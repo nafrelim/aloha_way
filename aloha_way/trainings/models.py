@@ -18,7 +18,7 @@ SEASONS = (
 
 
 class Trainer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
     level = models.SmallIntegerField(choices=LEVELS, default=-1)
     description = models.TextField(null=True, blank=True)
 
@@ -67,7 +67,7 @@ class TrainingPacket(models.Model):
 
 
 class Student(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
     weight = models.SmallIntegerField(null=True)
     height = models.SmallIntegerField(null=True)
     consents = models.BooleanField(default=False)

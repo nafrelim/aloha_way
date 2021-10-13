@@ -19,11 +19,12 @@ SEASONS = (
 
 class Trainer(models.Model):
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
+    phone = models.PositiveIntegerField()
     level = models.SmallIntegerField(choices=LEVELS, default=-1)
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
+        return f'{self.user.first_name} {self.user.last_name}, kom. {self.phone}'
 
 
 class TrainerTimetable(models.Model):
@@ -68,13 +69,20 @@ class TrainingPacket(models.Model):
 
 
 class Student(models.Model):
-    user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
-    weight = models.SmallIntegerField(null=True)
-    height = models.SmallIntegerField(null=True)
+    user = models.OneToOneField(User, models.SET_NULL, null=True, blank=True)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.EmailField(null=True, blank=True)
+    phone = models.PositiveIntegerField()
+    weight = models.SmallIntegerField(null=True, blank=True)
+    height = models.SmallIntegerField(null=True, blank=True)
     consents = models.BooleanField(default=False)
     available_hours = models.SmallIntegerField(default=0)
     used_hours = models.SmallIntegerField(default=0)
     description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}, kom. {self.phone}'
 
 
 # class Consent(models.Model):
@@ -107,6 +115,9 @@ class Training(models.Model):
     acceptance = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.trainer_id.user.first_name} {self.trainer_id.user.last_name}, {self.start_time} {self.duration}h'
 
 
 class StudentTraining(models.Model):

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+    <h1>{{ title }}</h1>
+    <h3>Instruktor: {{ trainer.user.first_name }} {{ trainer.user.last_name }} </h3>
+    <h4>Dostępne terminy w {{ season }}:</h4>
+    <ul>
+        {% for item in items %}
+            <li> {{ item.day }}, {{ item.start_time }} - {{ item.end_time }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

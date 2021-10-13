@@ -4,9 +4,9 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.views import View
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 
-from trainings.models import Trainer, TrainingPacket, Student
+from trainings.models import Trainer, TrainingPacket, Student, TrainerTimetable, SEASONS
 
 
 class IndexView(View):
@@ -106,9 +106,14 @@ class TrainersListView(ListView):
     template_name = 'list_trainers.html'
 
 
+class DetailTrainerView(DetailView):
+    model = Trainer
+    template_name = 'detail_trainer.html'
+
+
 class StudentsListView(ListView):
     model = Student
-    template_name = 'list_packets.html'
+    template_name = 'list_students.html'
 
 
 class PacketsListView(ListView):
@@ -116,6 +121,15 @@ class PacketsListView(ListView):
     template_name = 'list_packets.html'
 
 
+class TimetablesListView(View):
 
-class StudentListView(View):
-    pass
+    def get(self, request, id):
+        trainer = Trainer.objects.get(user_id=id)
+        items = TrainerTimetable.objects.filter(trainer_id=id).filter(season=0).order_by('day')
+        season = SEASONS[0][1]
+        return render(request, 'list_timetables.html', {
+            'items': items,
+            'trainer': trainer,
+            'season': season,
+        })
+

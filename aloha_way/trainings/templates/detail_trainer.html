@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+    <p> Instruktor: {{ trainer.user.first_name }} {{ trainer.user.last_name }} </p>
+            <a href="/timetables/{{ trainer.user.id }}"> Dostępność instruktora</a>
+
+{% endblock %}

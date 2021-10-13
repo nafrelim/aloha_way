@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
-    <h1>{{ title }}</h1>
-    {% include 'list_view.html' %}
+    <h3>Instruktorzy </h3>
+    <ul>
+        {% for item in object_list %}
+            <li><a href="/trainer/{{item.pk}}"> {{ item.user.first_name }} {{ item.user.last_name }}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock %}

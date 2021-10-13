@@ -20,7 +20,7 @@ SEASONS = (
 class Trainer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     level = models.SmallIntegerField(choices=LEVELS, default=-1)
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
@@ -60,7 +60,10 @@ class TrainingPacket(models.Model):
     season = models.SmallIntegerField(choices=SEASONS, default=0)
     number_of_hours = models.PositiveSmallIntegerField()
     price = models.PositiveSmallIntegerField()
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'sezon: {self.season}, nazwa: {self.name}'
 
 
 class Student(models.Model):
@@ -70,7 +73,7 @@ class Student(models.Model):
     consents = models.BooleanField(default=False)
     available_hours = models.SmallIntegerField(default=0)
     used_hours = models.SmallIntegerField(default=0)
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
 
 
 # class Consent(models.Model):
@@ -87,9 +90,9 @@ class Booking(models.Model):
     start_time = models.DateTimeField()
     duration = models.PositiveSmallIntegerField(default=1)
     trainer_id = models.ForeignKey(Trainer, on_delete=models.CASCADE)
-    students = models.ManyToManyField(Student)
+    student = models.ManyToManyField(Student)
     cancellation = models.BooleanField(default=False)
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -115,4 +118,4 @@ class StudentTraining(models.Model):
     student_id = models.ForeignKey(Student, on_delete=models.CASCADE)
     training_id = models.ForeignKey(Training, on_delete=models.CASCADE)
     duration = models.PositiveSmallIntegerField(default=0)
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)

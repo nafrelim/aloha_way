@@ -4,12 +4,16 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.views import View
+from django.views.generic import ListView
+
+from trainings.models import Trainer, TrainingPacket, Student
 
 
 class IndexView(View):
+
     def get(self, request):
-        ctx = {"actual_date": datetime.now()}
-        return render(request, "test.html", ctx)
+        response = render(request, 'base.html')
+        return response
 
 
 class DashboardView(View):
@@ -97,23 +101,20 @@ class AboutView(View):
     #     })
 
 
-class TrainerListView(View):
-    pass
-    # def get(self, request):
-    #     recipeList = Recipe.objects.all().order_by("-votes", "-created")
-    #     paginator = Paginator(recipeList, 50)
-    #     page_number = request.GET.get("page")
-    #     page_obj = paginator.get_page(page_number)
-    #     ctx = dict(page_obj=page_obj)
-    #     if 'delete' in request.GET:
-    #         recipe_id = request.GET['delete']
-    #         recipe_plans = RecipePlan.objects.filter(recipe_id_id=recipe_id).distinct('plan_id')
-    #         ctx['recipe_plans'] = recipe_plans
-    #         if not recipe_plans:
-    #             Recipe.objects.get(pk=recipe_id).delete()
-    #         else:
-    #             ctx['delete_error'] = True
-    #     return render(request, 'app-recipes.html', ctx)
+class TrainersListView(ListView):
+    model = Trainer
+    template_name = 'list_trainers.html'
+
+
+class StudentsListView(ListView):
+    model = Student
+    template_name = 'list_packets.html'
+
+
+class PacketsListView(ListView):
+    model = TrainingPacket
+    template_name = 'list_packets.html'
+
 
 
 class StudentListView(View):

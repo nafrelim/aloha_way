@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+    <h1>{{ title }}</h1>
+    <ul>
+        {% for item in object_list %}
+            <li><a href="{{ item.get_absolute_url }}"> {{ item.name }}</a>,  liczba godzin: {{ item.number_of_hours }}
+                <a href="{{ item.get_delete_url }}">Usuń</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

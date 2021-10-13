@@ -60,6 +60,7 @@ class TrainingPacket(models.Model):
     season = models.SmallIntegerField(choices=SEASONS, default=0)
     number_of_hours = models.PositiveSmallIntegerField()
     price = models.PositiveSmallIntegerField()
+    active = models.BooleanField(default=False)
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
@@ -90,7 +91,7 @@ class Booking(models.Model):
     start_time = models.DateTimeField()
     duration = models.PositiveSmallIntegerField(default=1)
     trainer_id = models.ForeignKey(Trainer, on_delete=models.CASCADE)
-    student = models.ManyToManyField(Student)
+    students = models.ManyToManyField(Student)
     cancellation = models.BooleanField(default=False)
     description = models.TextField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)

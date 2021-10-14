@@ -3,8 +3,9 @@ from datetime import datetime
 from django.shortcuts import render
 
 # Create your views here.
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, CreateView
 
 from trainings.models import Trainer, TrainingPacket, Student, TrainerTimetable, SEASONS
 
@@ -103,22 +104,45 @@ class AboutView(View):
 
 class TrainersListView(ListView):
     model = Trainer
-    template_name = 'list_trainers.html'
+    template_name = 'trainers_list.html'
 
 
 class DetailTrainerView(DetailView):
     model = Trainer
-    template_name = 'detail_trainer.html'
+    template_name = 'trainer_detail.html'
+
+
+class TrainerCreateView(CreateView):
+    model = Trainer
+    fields = '__all__'
+    success_url = reverse_lazy("trainers_list_view")
+
 
 
 class StudentsListView(ListView):
     model = Student
-    template_name = 'list_students.html'
+    template_name = 'students_list.html'
+
+
+class DetailStudentView(DetailView):
+    model = Student
+    template_name = 'student_detail.html'
 
 
 class PacketsListView(ListView):
     model = TrainingPacket
-    template_name = 'list_packets.html'
+    template_name = 'packets_list.html'
+
+
+class DetailPacketView(DetailView):
+    model = TrainingPacket
+    template_name = 'packet_detail.html'
+
+
+class PacketCreateView(CreateView):
+    model = TrainingPacket
+    fields = '__all__'
+    success_url = reverse_lazy("packets_list_view")
 
 
 class TimetablesListView(View):
@@ -127,7 +151,7 @@ class TimetablesListView(View):
         trainer = Trainer.objects.get(user_id=id)
         items = TrainerTimetable.objects.filter(trainer_id=id).filter(season=0).order_by('day')
         season = SEASONS[0][1]
-        return render(request, 'list_timetables.html', {
+        return render(request, 'timetables_list.html', {
             'items': items,
             'trainer': trainer,
             'season': season,

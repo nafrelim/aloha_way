@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+    <h3> Student: {{ student.first_name }} {{ student.last_name }} </h3>
+
+    <br>
+    <a href="/student/{{ student.id }}"> Modyfikuj dane</a>
+    <a href="/account/{{ student.id }}"> Dodaj konto</a>
+
+{% endblock %}

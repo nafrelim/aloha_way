@@ -23,8 +23,12 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('trainers/', views.TrainersListView.as_view(), name='trainers_list_view'),
     path('trainer/<int:pk>/', views.DetailTrainerView.as_view(), name='detail_trainer_view'),
+    path('add-trainer/', views.TrainerCreateView.as_view(), name='add_trainer_view'),
     path('students/', views.StudentsListView.as_view(), name='students_list_view'),
+    path('student/<int:pk>/', views.DetailStudentView.as_view(), name='detail_trainer_view'),
     path('packets/', views.PacketsListView.as_view(), name='packets_list_view'),
+    path('packet/<int:pk>/', views.DetailPacketView.as_view(), name='detail_trainer_view'),
+    path('add-packet/', views.PacketCreateView.as_view(), name='add_packet_view'),
     path('timetables/<int:id>/', views.TimetablesListView.as_view(), name='timetables_list_view'),
     # path('accounts/', include('accounts.urls')),
 ]

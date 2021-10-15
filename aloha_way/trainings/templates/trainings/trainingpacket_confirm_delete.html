@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+    <h3> Pakiet: {{ trainingpacket.name }} </h3>
+    <form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <br>
+    <input type="submit" value="Potwierdź usunięcie">
+    </form>
+{% endblock %}

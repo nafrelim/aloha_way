@@ -5,7 +5,7 @@ from django.shortcuts import render
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
 from trainings.models import Trainer, TrainingPacket, Student, TrainerTimetable, SEASONS
 
@@ -118,7 +118,6 @@ class TrainerCreateView(CreateView):
     success_url = reverse_lazy("trainers_list_view")
 
 
-
 class StudentsListView(ListView):
     model = Student
     template_name = 'students_list.html'
@@ -127,6 +126,25 @@ class StudentsListView(ListView):
 class DetailStudentView(DetailView):
     model = Student
     template_name = 'student_detail.html'
+
+
+class StudentCreateView(CreateView):
+    model = Student
+    fields = ['first_name', 'last_name', 'email', 'phone', 'weight', 'height', 'consents', 'available_hours',
+              'used_hours', 'description']
+    success_url = reverse_lazy("students_list_view")
+
+
+class StudentDeleteView(DeleteView):
+    model = Student
+    success_url = reverse_lazy("students_list_view")
+
+
+class StudentUpdateView(UpdateView):
+    model = Student
+    fields = ['first_name', 'last_name', 'email', 'phone', 'weight', 'height', 'consents', 'available_hours',
+              'used_hours', 'description']
+    success_url = reverse_lazy("students_list_view")
 
 
 class PacketsListView(ListView):
@@ -140,6 +158,17 @@ class DetailPacketView(DetailView):
 
 
 class PacketCreateView(CreateView):
+    model = TrainingPacket
+    fields = '__all__'
+    success_url = reverse_lazy("packets_list_view")
+
+
+class PacketDeleteView(DeleteView):
+    model = TrainingPacket
+    success_url = reverse_lazy("packets_list_view")
+
+
+class PacketUpdateView(UpdateView):
     model = TrainingPacket
     fields = '__all__'
     success_url = reverse_lazy("packets_list_view")

@@ -3,9 +3,9 @@
     <h3>Kursanci </h3>
     <ul>
         {% for item in object_list %}
-            <li><a href="/student/{{item.pk}}"> {{ item.first_name}} {{ item.last_name }}</a>
-                <a href="{{ item.get_delete_url }}">Usuń</a>
-            </li>
+            <li><a href="/student/{{item.pk}}"> {{ item.first_name}} {{ item.last_name }}</a></li>
         {% endfor %}
     </ul>
+    <br><br>
+    <a href="/add-student/">Dodaj kursanta</a>
 {% endblock %}

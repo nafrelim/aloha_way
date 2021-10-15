@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
-    <p> Instruktor: {{ trainer.user.first_name }} {{ trainer.user.last_name }} </p>
-
-
-
-
-            <a href="/timetables/{{ trainer.user.id }}"> Dostępność instruktora</a>
-
+    <h3> Instruktor: {{ trainer.user.first_name }} {{ trainer.user.last_name }} </h3>
+    <p> Email: {{ trainer.user.email }}</p>
+    <p> Numer telefonu: {{ trainer.phone }}</p>
+    <p> Poziom kompetencji: {{ trainer.level }}</p>
+    {% if trainer.description %}
+        <p>Opis:</p>
+        <p>{{ student.description }}</p>
+    {% endif %}
+    <br><br>
+    <a href="/trainer/{{ student.id }}"> Modyfikuj dane</a>
+    <a href="/trainer/del/{{ student.id }}"> Usuń</a>
+    <a href="/timetables/{{ trainer.user.id }}"> Dostępność instruktora</a>
 {% endblock %}

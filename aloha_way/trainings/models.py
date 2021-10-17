@@ -109,7 +109,10 @@ class Booking(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'Instruktor: {self.trainer_id}, star: {self.start_time}, czas trwania: {self.duration}'
+        d = self.start_time.strftime('%Y-%m-%d')
+        h = self.start_time.strftime('%H:%M')
+        return f'Inst. {self.trainer_id.user.first_name} {self.trainer_id.user.last_name}, ' \
+               f'start: {d} {h}, czas trw.: {self.duration} g.'
 
 
 class Training(models.Model):

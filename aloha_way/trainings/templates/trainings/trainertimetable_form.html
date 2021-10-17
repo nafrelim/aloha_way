@@ -3,9 +3,9 @@
     <table>
         <form method="post">
             {% csrf_token %}
-            <p>Użytkownik: {{form.username }}</p>
-            <p>Hasło: {{form.password }}</p>
-            <input type="submit" value="Zapisz">
+            {{ form.as_table }}
+            <tr>
+                <td colspan="2"><p><input type="submit" value="Zapisz"></td>
             </tr>
         </form>
     </table>

@@ -7,7 +7,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
-from trainings.models import Trainer, TrainingPacket, Student, TrainerTimetable, SEASONS
+from trainings.forms import TrainingCreateForTrainerForm, TrainingCreateForm, SelectBooking
+from trainings.models import Trainer, TrainingPacket, Student, TrainerTimetable, SEASONS, Booking, Training
 
 
 class IndexView(View):
@@ -118,6 +119,17 @@ class TrainerCreateView(CreateView):
     success_url = reverse_lazy("trainers_list_view")
 
 
+class TrainerDeleteView(DeleteView):
+    model = Trainer
+    success_url = reverse_lazy("trainers_list_view")
+
+
+class TrainerUpdateView(UpdateView):
+    model = Trainer
+    fields = '__all__'
+    success_url = reverse_lazy("trainers_list_view")
+
+
 class StudentsListView(ListView):
     model = Student
     template_name = 'students_list.html'
@@ -186,3 +198,124 @@ class TimetablesListView(View):
             'season': season,
         })
 
+
+class TimetableCreateView(CreateView):
+    model = TrainerTimetable
+    fields = '__all__'
+    success_url = reverse_lazy("timetables_list_view")
+
+
+class TimetableDeleteView(DeleteView):
+    model = TrainerTimetable
+    success_url = reverse_lazy("timetables_list_view")
+
+
+class TimetableUpdateView(UpdateView):
+    model = TrainerTimetable
+    fields = '__all__'
+    success_url = reverse_lazy("timetables_list_view")
+
+
+class BookingsListView(ListView):
+    model = Booking
+    template_name = 'bookings_list.html'
+
+
+class DetailBookingView(DetailView):
+    model = Booking
+    template_name = 'booking_detail.html'
+
+
+class BookingCreateView(CreateView):
+    model = Booking
+    fields = '__all__'
+    success_url = reverse_lazy("bookings_list_view")
+
+
+class BookingCreateForStudentView(DetailView):
+    pass
+
+
+class BookingDeleteView(DeleteView):
+    model = Booking
+    success_url = reverse_lazy("bookings_list_view")
+
+
+class BookingUpdateView(UpdateView):
+    model = Booking
+    fields = '__all__'
+    success_url = reverse_lazy("bookings_list_view")
+
+
+class TrainingsListView(ListView):
+    model = Training
+    template_name = 'trainings_list.html'
+
+
+class DetailTrainingView(DetailView):
+    model = Training
+    template_name = 'training_detail.html'
+
+
+class TrainingChoiceBookingView(View):
+    def get(self, request):
+        bookings = Booking.objects.all()
+        form = SelectBooking()
+        return render(request, 'select_booking_form.html', {'form': form})
+
+    def post(self, request):
+        form = SelectBooking(request.POST)
+        if form.is_valid():
+            booking_id = form.cleaned_data['booking']
+            return render(request, f'training/add/<int:{booking_id}>/')
+
+
+class TrainingCreateView(View):
+    def get (self, request, booking_id):
+        if booking_id is not None:
+            booking = Booking.objects.get(pk=booking_id)
+            trainer_id = booking.trainer_id
+            form = TrainingCreateForm(initial={
+                'booking_id': booking_id,
+                'trainer_id': trainer_id
+            })
+            exclude = ['booking_id', 'trainer_id']
+            return render(request, 'training_form.html', {
+                'form': form,
+                'booking_id': booking_id,
+                'trainer_id': trainer_id,
+            })
+        else:
+            form = TrainingCreateForm()
+            fields = '__all__'
+            return render(request, 'training_form.html', {'form': form})
+
+    def post(self, request):
+        pass
+
+
+class TrainingCreateForTrainerView(View):
+    def get (self, request, pk):
+        trainer = Trainer.objects.get(pk=pk)
+        form = TrainingCreateForTrainerForm()
+        return render(request, 'training_form.html', {
+            'form': form,
+            'trainer': trainer,
+        })
+
+    def post(self, request):
+        form = TrainingCreateForTrainerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return render(request, "trainings_list_view")
+
+
+class TrainingDeleteView(DeleteView):
+    model = Training
+    success_url = reverse_lazy("training_list_view")
+
+
+class TrainingUpdateView(UpdateView):
+    model = Training
+    fields = '__all__'
+    success_url = reverse_lazy("training_list_view")

@@ -6,11 +6,13 @@
     <ul>
         {% for item in items %}
             <li> {{ item.day }}, {{ item.start_time }} - {{ item.end_time }}
-                <a href="/timetable/{{ item.id }}"> Modyfikuj dane</a>
+                {# dodac warunek, że mozna modyfikować tylko od dzisiaj i dalej #}
+                <a href="/timetable/modify/{{ item.id }}"> Modyfikuj dane</a>
+                {# dodac warunek, że mozna usuwać tylko od dzisiaj i dalej #}
                 <a href="/timetable/del/{{ item.id }}"> Usuń</a>
             </li>
         {% endfor %}
+        <br>
         <a href="/timetable/add/"> Dodaj</a>
-
     </ul>
 {% endblock %}

@@ -6,10 +6,12 @@
     <p> Poziom kompetencji: {{ trainer.level }}</p>
     {% if trainer.description %}
         <p>Opis:</p>
-        <p>{{ student.description }}</p>
+        <p>{{ trainer.description }}</p>
     {% endif %}
     <br><br>
-    <a href="/trainer/{{ student.id }}"> Modyfikuj dane</a>
-    <a href="/trainer/del/{{ student.id }}"> Usuń</a>
-    <a href="/timetables/{{ trainer.user.id }}"> Dostępność instruktora</a>
+    <a href="/trainer/update/{{ trainer.user.id }}"> Modyfikuj dane</a>
+    <a href="/trainer/del/{{ trainer.user.id }}"> Usuń</a>
+    <a href="/timetables/{{ trainer.user.id }}"> Grafik obecności</a>
+    <a href="/booking/add/{{ trainer.user.id }}"> Zaplanuj szkolenie</a>
+    <a href="/training/add/{{ trainer.user.id }}"> Zapisz szkolenie</a>
 {% endblock %}

@@ -15,32 +15,31 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         {% if not user.is_authenticated %}
-            <a href="{% url 'login' %}">Zaloguj się</a>
+            <a href="{% url 'login' %}">Zalogowanie </a>
         {% else %}
-            <a href="{% url 'logout' %}">Wyloguj się </a>
+            <a href="{% url 'logout' %}">Wylogowanie </a>
         {% endif %}
         {% if user.is_authenticated %}
-            <a href="{% url 'trainers_list_view' %}"> Instruktorzy</a>
-            <a href="{% url 'students_list_view' %}"> Kursanci</a>
-
-{#            <a href="{% url 'booking_add_view' %}"> Zaplanuj szkolenie</a>#}
-{#            <a href="{% url 'training_add_view' %}"> Realizacja szkolenie </a>#}
+            <a href="{% url 'trainers_list_view' %}"> Instruktorzy </a>
+            <a href="{% url 'students_list_view' %}"> Kursanci </a>
+            <a href="{% url 'bookings_list_view' %}"> Lista rezerwacji szkoleń </a>
+            <a href="{% url 'add_booking_view' %}"> Zaplanuj szkolenie </a>
+            <a href="{% url 'trainings_list_view' %}"> Lista zrealizowanych szkoleń </a>
+            <a href="{% url 'add_training_view' %}"> Realizacja szkolenie </a>
 {#            <a href="{% url 'bookkings_list_view' %}"> Szkolenia zaplanowane</a>#}
 {#            <a href="{% url 'training_list_view' %}"> Szkolenia wykonane</a>#}
-            <a href="{% url 'packets_list_view' %}"> Pakiety szkoleniowe</a>
+            <a href="{% url 'packets_list_view' %}"> Pakiety szkoleniowe </a>
         {% endif %}
 
         <a href=""> O Nas</a>
     </div>
 </nav>
-
 {% block zawartosc %}
     Bazowy szablon
 {% endblock %}
-
 </body>
+<br><br>
 <footer>
     Zalogowany użytkownik: {{ user.username }}
 </footer>
-
 </html>

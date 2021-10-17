@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+    <h3>Lista rezerwacji </h3>
+    <ul>
+        {% for item in object_list %}
+            <li><a href="/booking/{{item.pk}}"> {{ item.trainer_id.user.first_name }} {{ item.trainer_id.user.last_name }},
+                {{ item.start_time }}</a>, liczba godzin: {{ item.duration }}</li>
+        {% endfor %}
+    </ul>
+    <br><br>
+    <a href="/packet/add/">Dodaj pakiet</a>
+{% endblock %}

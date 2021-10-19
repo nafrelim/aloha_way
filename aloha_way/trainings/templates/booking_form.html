@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
-    <h4>Rezerwacja szkolenia</h4>
-    <br>
+    <h3>Rezerwacja dla: {{ student }}</h3>
     <table>
         <form method="post">
             {% csrf_token %}

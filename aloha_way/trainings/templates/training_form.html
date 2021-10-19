@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
-    <h4>Rezerwacja szkolenia</h4>
-    <br>
+    <h3>Realizacja treningu</h3>
+    <p>Rezerwacja {{ booking.start_time }},
+        instr. {{ booking.trainer.user.first_name }} {{ booking.trainer.user.first_name }}</p>
     <table>
         <form method="post">
             {% csrf_token %}

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+    <h3>Szkolenia dzisiaj </h3>
+    <ul>
+        {% for booking in bookings %}
+            <li>
+                <a href="/booking/{{booking.pk}}"> {{ booking }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

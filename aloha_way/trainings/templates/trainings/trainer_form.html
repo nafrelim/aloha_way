@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
+    {% if trainer.user %}
+    <h4>Trener: {{ trainer.user.first_name }} {{ trainer.user.last_name }}</h4>
+    {% else %}
+    <h4>Dodaj nowego trenera {{ trainer.user.first_name }} {{ trainer.user.last_name }}</h4>
+    {% endif %}
+    <br>
     <table>
         <form method="post">
             {% csrf_token %}
             {{ form.as_table }}
             <tr>
-                <td colspan="2"><p><input type="submit" value="Zapisz"></td>
+                <td colspan="2"><input type="submit" value="Zapisz"></td>
             </tr>
         </form>
     </table>

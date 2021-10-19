@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
-    <h4> Student: {{ student.first_name }} {{ student.last_name }} </h4>
+    <h3> Student: {{ student.first_name }} {{ student.last_name }} </h3>
     <p> Email: {{ student.email }}</p>
     <p> Numer telefonu: {{ student.phone }}</p>
     <p> Waga: {{ student.weight }}</p>
@@ -20,9 +20,6 @@
     <br><br>
     <a href="/student/update/{{ student.id }}"> Modyfikuj dane</a>
     <a href="/student/del/{{ student.id }}"> Usuń</a>
-    <br>
-    <a href="/packet/add/{{ student.id }}"> Dodaj pakiet</a>
-    <br><br>
-    <a href="/student/account/{{ student.id }}"> Dodaj konto użytkownika</a>
+    <a href="/student/account/{{ student.id }}"> Dodaj konto</a>
 
 {% endblock %}

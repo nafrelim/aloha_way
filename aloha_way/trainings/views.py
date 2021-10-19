@@ -1,75 +1,25 @@
 from datetime import datetime
 
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
-from trainings.forms import TrainingCreateForTrainerForm, TrainingCreateForm, SelectBooking
-from trainings.models import Trainer, TrainingPacket, Student, TrainerTimetable, SEASONS, Booking, Training
+from trainings.forms import TrainingCreateForTrainerForm, TrainingCreateForm, BookingCreateForm, AddPacketForStudentForm
+from trainings.models import Trainer, TrainingPacket, Student, TrainerTimetable, SEASONS, Booking, Training, \
+    StudentTraining
 
 
 class IndexView(View):
 
     def get(self, request):
-        response = render(request, 'base.html')
+        today = datetime.now().strftime('%Y-%m-%d')
+        bookings_today = Booking.objects.filter(day=today).filter(cancellation=False).order_by('start_time')
+        response = render(request, 'index.html', {'bookings': bookings_today })
         return response
-
-
-class DashboardView(View):
-    pass
-    # def get(self, request):
-    #     plan = Plan.objects.order_by('-created').first()
-    #     recipe_plans = RecipePlan.objects.filter(plan_id=plan.id).all()
-    #     return render(request, "dashboard.html", dict(
-    #         recipes_count=Recipe.objects.all().count(),
-    #         plans_count=Plan.objects.all().count(),
-    #         day_names=DayName.objects.all().order_by('order'),
-    #         last_added_plan=plan,
-    #         recipe_plans=recipe_plans
-    #     ))
-
-
-class MainPage(View):
-    pass
-    # def get(self, request):
-    #     recipes = Recipe.objects.all()
-    #     array = []
-    #     for recipe in recipes:
-    #         array.append(recipe.id)
-    #     shuffle(array)
-    #     try:
-    #         about = '/' + Page.objects.get(title='o aplikacji').slug
-    #         contact = '/' + Page.objects.get(title='kontakt').slug
-    #     except:
-    #         about = "#about"
-    #         contact = "#contact"
-    #     try:
-    #         recipe1 = Recipe.objects.get(id=array[0])
-    #         recipe2 = Recipe.objects.get(id=array[1])
-    #         recipe3 = Recipe.objects.get(id=array[2])
-    #         resp = {
-    #             "recipe1": recipe1,
-    #             "recipe2": recipe2,
-    #             "recipe3": recipe3,
-    #             "about": about,
-    #             "contact": contact,
-    #         }
-    #     except IndexError:
-    #         empty = {
-    #             "name": "Nie ma przepisów!",
-    #             "description": "Wprowadź minimum 3 przepisy do bazy danych."
-    #         }
-    #         resp = {
-    #             "recipe1": empty,
-    #             "recipe2": empty,
-    #             "recipe3": empty,
-    #             "about": about,
-    #             "contact": contact,
-    #         }
-    #     return render(request, 'index.html', resp)
 
 
 class ContactView(View):
@@ -126,7 +76,7 @@ class TrainerDeleteView(DeleteView):
 
 class TrainerUpdateView(UpdateView):
     model = Trainer
-    fields = '__all__'
+    fields = ['phone', 'level', 'description']
     success_url = reverse_lazy("trainers_list_view")
 
 
@@ -175,6 +125,25 @@ class PacketCreateView(CreateView):
     success_url = reverse_lazy("packets_list_view")
 
 
+class AddPacketForStudentView(View):
+    def get(self, request, student_id):
+        form = AddPacketForStudentForm
+        student = Student.objects.get(pk=student_id)
+        return render(request, 'add_packet_for_student_form.html', {
+            'form': form,
+            'student': student
+        })
+
+    def post(self, request,student_id):
+        student = Student.objects.get(pk=student_id)
+        form = AddPacketForStudentForm(request.POST)
+        if form.is_valid():
+            packet = form.cleaned_data['packet']
+            student.available_hours += packet.number_of_hours
+            student.save()
+        return redirect(f'/student/{student_id}')
+
+
 class PacketDeleteView(DeleteView):
     model = TrainingPacket
     success_url = reverse_lazy("packets_list_view")
@@ -217,8 +186,13 @@ class TimetableUpdateView(UpdateView):
 
 
 class BookingsListView(ListView):
-    model = Booking
+    queryset = Booking.objects.all().filter(cancellation=False).order_by('day').order_by('start_time')
     template_name = 'bookings_list.html'
+
+
+class CanceledBookingsListView(ListView):
+    queryset = Booking.objects.all().filter(cancellation=True).order_by('day').order_by('start_time')
+    template_name = 'canceled_bookings_list.html'
 
 
 class DetailBookingView(DetailView):
@@ -226,19 +200,57 @@ class DetailBookingView(DetailView):
     template_name = 'booking_detail.html'
 
 
-class BookingCreateView(CreateView):
-    model = Booking
-    fields = '__all__'
-    success_url = reverse_lazy("bookings_list_view")
+# class BookingCreateView(CreateView):
+#     model = Booking
+#     fields = '__all__'
+#     success_url = reverse_lazy("bookings_list_view")
 
 
-class BookingCreateForStudentView(DetailView):
-    pass
+class BookingCreateView(View):
+    def get(self, request):
+        form = BookingCreateForm
+        return render(request, 'booking_form.html', {
+            'form': form,
+        })
+
+    def post(self, request):
+        form = BookingCreateForm(request.POST)
+        if form.is_valid():
+            booking = form.save()
+            booking.save()
+        return redirect('/bookings/')
+
+
+class BookingCreateForStudentView(View):
+    def get(self, request, student_id):
+        student = Student.objects.get(pk=student_id)
+        form = BookingCreateForm
+        return render(request, 'booking_form.html', {
+            'form': form,
+            'student': student,
+        })
+
+    def post(self, request, student_id):
+        form = BookingCreateForm(request.POST)
+        student = Student.objects.get(pk=student_id)
+        if form.is_valid():
+            booking = form.save(commit=False)
+            booking.save()
+            booking.students.add(student)
+        return redirect('/students/')
 
 
 class BookingDeleteView(DeleteView):
     model = Booking
     success_url = reverse_lazy("bookings_list_view")
+
+
+class BookingCancelView(View):
+    def get(self, request, booking_id):
+        booking = Booking.objects.get(pk=booking_id)
+        booking.cancellation = True
+        booking.save()
+        return redirect('/bookings/')
 
 
 class BookingUpdateView(UpdateView):
@@ -257,57 +269,54 @@ class DetailTrainingView(DetailView):
     template_name = 'training_detail.html'
 
 
-class TrainingChoiceBookingView(View):
-    def get(self, request):
-        bookings = Booking.objects.all()
-        form = SelectBooking()
-        return render(request, 'select_booking_form.html', {'form': form})
-
-    def post(self, request):
-        form = SelectBooking(request.POST)
-        if form.is_valid():
-            booking_id = form.cleaned_data['booking']
-            return render(request, f'training/add/<int:{booking_id}>/')
+class TrainingCreateView(CreateView):
+    model = Training
+    fields = '__all__'
+    success_url = reverse_lazy("trainings_list_view")
 
 
-class TrainingCreateView(View):
+class TrainingCreateForBookingView(View):
     def get (self, request, booking_id):
-        if booking_id is not None:
-            booking = Booking.objects.get(pk=booking_id)
-            trainer_id = booking.trainer_id
-            form = TrainingCreateForm(initial={
-                'booking_id': booking_id,
-                'trainer_id': trainer_id
-            })
-            exclude = ['booking_id', 'trainer_id']
-            return render(request, 'training_form.html', {
-                'form': form,
-                'booking_id': booking_id,
-                'trainer_id': trainer_id,
-            })
-        else:
-            form = TrainingCreateForm()
-            fields = '__all__'
-            return render(request, 'training_form.html', {'form': form})
-
-    def post(self, request):
-        pass
-
-
-class TrainingCreateForTrainerView(View):
-    def get (self, request, pk):
-        trainer = Trainer.objects.get(pk=pk)
-        form = TrainingCreateForTrainerForm()
+        booking = Booking.objects.get(pk=booking_id)
+        form = TrainingCreateForm(initial={
+            'start_time': booking.start_time,
+            'trainer': booking.trainer,
+            'duration': booking.duration,
+            'students': booking.students.filter()
+        })
         return render(request, 'training_form.html', {
             'form': form,
-            'trainer': trainer,
+            'booking': booking,
         })
 
-    def post(self, request):
-        form = TrainingCreateForTrainerForm(request.POST)
+    def post(self, request, booking_id):
+        form = TrainingCreateForm(request.POST)
         if form.is_valid():
-            form.save()
-            return render(request, "trainings_list_view")
+            training = form.save(commit=False)
+            training.booking_id_id = booking_id
+            training.save()
+            form.save_m2m()
+            student_trainings = StudentTraining.objects.filter(training_id=training.id)
+            for item in student_trainings:
+                 item.duration = training.duration
+                 item.save()
+        return redirect('/bookings/')
+
+
+# class TrainingCreateForTrainerView(View):
+#     def get (self, request, pk):
+#         trainer = Trainer.objects.get(pk=pk)
+#         form = TrainingCreateForTrainerForm()
+#         return render(request, 'training_form.html', {
+#             'form': form,
+#             'trainer': trainer,
+#         })
+#
+#     def post(self, request):
+#         form = TrainingCreateForTrainerForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return render(request, "trainings_list_view")
 
 
 class TrainingDeleteView(DeleteView):

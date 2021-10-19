@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
-    <h3> Pozycja grafiku: {{ trainertimetable.day }}, {{ trainertimetable.start_time }} - {{ trainertimetable.end_time }} </h3>
+    <h4> Pozycja grafiku: {{ trainertimetable }} </h4>
     <form action="" method="post">
     {% csrf_token %}
     {{ form.as_p }}

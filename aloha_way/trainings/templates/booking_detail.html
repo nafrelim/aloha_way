@@ -1,7 +1,14 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
-    <h3> Początek i czas trwania: {{ booking.start_time }}, {{ booking.duration }} </h3>
-    <p> Instruktor: {{ booking.trainer_id.user.first_name }} {{ booking.trainer_id.user.last_name }}</p>
+    <h4> Rezerwacja </h4>
+    <h5>
+        {{ booking }}
+        {% if booking.cancellation %}
+            (REZERWACJA ANULOWANA)
+        {% endif %}
+    </h5>
+
+    <br>
     <p>Kursanci:</p>
     <ul>
         {% for student in booking.students.all %}
@@ -16,5 +23,5 @@
 {# mozliwośc edycji i usuwania tylko w do czasu gdy nie minął termin oraz gdy nie ma powiazanego rekordu Training #}
     <a href="/booking/update/{{ booking.id }}"> Modyfikuj dane</a>
     <a href="/booking/del/{{ booking.id }}"> Usuń</a>
-    <a href="/training/add/"> Wykonanie szkolenia</a>
+    <a href="/training/add/{{ booking.id }}"> Wykonanie szkolenia</a>
 {% endblock %}

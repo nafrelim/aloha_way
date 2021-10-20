@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 # Poniższe słowniki docelowo powinny być tabelami
 
 LEVELS = (
-                (-1, 'not defined'),
-                (0, 'junior'),
-                (1, 'mid'),
-                (2, 'senior'),
+                (0, 'nieokreślony'),
+                (1, 'junior'),
+                (2, 'mid'),
+                (3, 'senior'),
              )
 
 
@@ -21,11 +21,12 @@ class Trainer(models.Model):
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
     phone = models.PositiveIntegerField(verbose_name='Numer telefonu')
     level = models.SmallIntegerField(choices=LEVELS, default=-1, verbose_name='Poziom kompetencji')
+    hours_completed = models.PositiveSmallIntegerField(default=0, verbose_name='Zrealizowanych godzin')
     active = models.BooleanField(default=True, verbose_name='Czy pracuje w tym sezonie?')
     description = models.TextField(null=True, blank=True, verbose_name='Dodatkowe informacje')
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}, kom. {self.phone}'
+        return f'{self.user.first_name} {self.user.last_name}'
 
 
 class TrainerTimetable(models.Model):
@@ -38,24 +39,12 @@ class TrainerTimetable(models.Model):
     start_time = models.TimeField(verbose_name='Początek')
     end_time = models.TimeField(verbose_name='Koniec')
 
+    class Meta:
+        ordering = ['day', 'start_time']
+
     def __str__(self):
         return f'{self.trainer.user.first_name} {self.trainer.user.last_name}, {self.day} ' \
                f'{self.start_time}-{self.end_time}'
-
-
-class TrainerBilling(models.Model):
-
-    # Rozliczenie czasu pracy trenera: czas poświęcony na treningi i czas, za który trener otrzymał wynagrodzenie
-
-    trainer_id = models.ForeignKey(Trainer, on_delete=models.CASCADE)
-    season = models.SmallIntegerField(choices=SEASONS, default=0, verbose_name='Sezon')
-    hours_completed = models.PositiveSmallIntegerField(default=0, verbose_name='Zrealizowanych godzin')
-    hours_paid = models.PositiveSmallIntegerField(default=0, verbose_name='Godziny opłacone')
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f'Sezon: {self.season}, godz. zrealizowane: {self.hours_completed}, godz. opłacone: {self.hours_paid}'
 
 
 class TrainingPacket(models.Model):
@@ -67,6 +56,9 @@ class TrainingPacket(models.Model):
     price = models.PositiveSmallIntegerField(verbose_name='Cena')
     active = models.BooleanField(default=False, verbose_name='Aktywny')
     description = models.TextField(null=True, blank=True, verbose_name='Dodatkowe informacje')
+
+    class Meta:
+        ordering = ['number_of_hours']
 
     def __str__(self):
         return f'{self.name}'
@@ -82,11 +74,14 @@ class Student(models.Model):
     height = models.SmallIntegerField(null=True, blank=True, verbose_name='Wzrost')
     consents = models.BooleanField(default=False, verbose_name='Podpisanie zgód')
     available_hours = models.SmallIntegerField(default=0, verbose_name='Dostępne godziny')
-    used_hours = models.SmallIntegerField(default=0, verbose_name='Godziny wykorzystane')
+    used_hours = models.PositiveSmallIntegerField(default=0, verbose_name='Godziny wykorzystane')
     description = models.TextField(null=True, blank=True, verbose_name='Dodatkowe informacje')
 
+    class Meta:
+        ordering = ['last_name']
+
     def __str__(self):
-        return f'{self.first_name} {self.last_name}, kom. {self.phone}'
+        return f'{self.first_name} {self.last_name}'
 
 
 # class Consent(models.Model):
@@ -104,10 +99,14 @@ class Booking(models.Model):
     duration = models.PositiveSmallIntegerField(default=1, verbose_name='Czas trwania(godz)')
     trainer = models.ForeignKey(Trainer, on_delete=models.CASCADE, verbose_name='Instruktor')
     students = models.ManyToManyField(Student, verbose_name='Kursanci')
-    cancellation = models.BooleanField(default=False, verbose_name='Skasowanie')
+    cancellation = models.BooleanField(default=False, blank=True, verbose_name='Skasowanie')
+    was_training = models.BooleanField(default=False, blank=True, null=True, verbose_name='Szkolenie odbyte?')
     description = models.TextField(null=True, blank=True, verbose_name='Dodatkowe informacje')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['day', 'start_time']
 
     def __str__(self):
         d = self.day.strftime('%Y-%m-%d')
@@ -120,14 +119,21 @@ class Training(models.Model):
     booking = models.OneToOneField(Booking, on_delete=models.CASCADE, verbose_name='Rezerwacja')
     day = models.DateField(auto_now_add=True, verbose_name='Dzień szkolenia')
     start_time = models.TimeField(verbose_name='Godzina rozpoczęcia')
+    duration = models.PositiveSmallIntegerField(default=0, verbose_name='Czas trwania(godz)')
     trainer = models.ForeignKey(Trainer, on_delete=models.CASCADE, verbose_name='Instruktor')
     students = models.ManyToManyField(Student, through="StudentTraining", verbose_name='Kursanci')
     acceptance = models.BooleanField(default=False, verbose_name='Akceptacja')
+    description = models.TextField(null=True, blank=True, verbose_name='Dodatkowe informacje')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ['day', 'start_time']
+
     def __str__(self):
-        return f'{self.trainer.user.first_name} {self.trainer.user.last_name}, {self.start_time} {self.duration}h'
+        h = self.start_time.strftime('%H:%M')
+        return f'{self.trainer.user.first_name} {self.trainer.user.last_name}, ' \
+               f'godz. {h}, cz.trw. {self.duration} godz.'
 
 
 class StudentTraining(models.Model):

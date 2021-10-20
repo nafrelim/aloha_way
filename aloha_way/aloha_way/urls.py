@@ -52,10 +52,11 @@ urlpatterns = [
     path('booking/cancel/<int:booking_id>/', views.BookingCancelView.as_view(), name='cancel_booking_view'),
     path('trainings/', views.TrainingsListView.as_view(), name='trainings_list_view'),
     path('training/<int:pk>/', views.DetailTrainingView.as_view(), name='detail_training_view'),
-    path('training/add/', views.TrainingCreateView.as_view(), name='add_training_view'),
-    path('training/add/<int:booking_id>/', views.TrainingCreateForBookingView.as_view(), name='add_training_trainer_view'),
+    path('training/add/<int:booking_id>/', views.TrainingCreateView.as_view(), name='add_training_trainer_view'),
+    path('training/student/<int:pk>', views.TrainingStudentUpdateView.as_view(), name='training_student_view'),
     path('training/del/<int:pk>/', views.TrainingDeleteView.as_view(), name='del_training_view'),
     path('training/update/<int:pk>/', views.TrainingUpdateView.as_view(), name='update_training_view'),
+    path('training/acceptance/<int:training_id>/', views.TrainingAcceptanceView.as_view(), name='acceptance_training_view'),
 
     # path('accounts/', include('accounts.urls')),
 ]

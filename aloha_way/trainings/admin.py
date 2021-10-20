@@ -5,7 +5,6 @@ from .models import *
 
 admin.site.register(Trainer)
 admin.site.register(TrainerTimetable)
-admin.site.register(TrainerBilling)
 admin.site.register(TrainingPacket)
 admin.site.register(Student)
 admin.site.register(Booking)

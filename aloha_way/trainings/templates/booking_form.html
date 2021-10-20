@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
-    <h3>Rezerwacja dla: {{ student }}</h3>
+    <h4>Rezerwacja szkolenia</h4>
+    <br>
     <table>
         <form method="post">
             {% csrf_token %}
             {{ form.as_table }}
             <tr>
-                <td colspan="2"><p><input type="submit" value="Zapisz"></td>
+                <td colspan="2"><input type="submit" value="Zapisz"></td>
             </tr>
         </form>
     </table>

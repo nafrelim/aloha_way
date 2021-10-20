@@ -3,7 +3,7 @@
     <h3> Instruktor: {{ trainer.user.first_name }} {{ trainer.user.last_name }} </h3>
     <p> Email: {{ trainer.user.email }}</p>
     <p> Numer telefonu: {{ trainer.phone }}</p>
-    <p> Poziom kompetencji: {{ trainer.level }}</p>
+    <p> Poziom kompetencji: {{ trainer.get_level_display }}</p>
     {% if trainer.description %}
         <p>Opis:</p>
         <p>{{ trainer.description }}</p>

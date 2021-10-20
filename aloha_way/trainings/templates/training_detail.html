@@ -1,25 +1,27 @@
-{% extends 'base.html' %}
+    {% extends 'base.html' %}
 {% block zawartosc %}
-    <h3> Student: {{ student.first_name }} {{ student.last_name }} </h3>
-    <p> Email: {{ student.email }}</p>
-    <p> Numer telefonu: {{ student.phone }}</p>
-    <p> Waga: {{ student.weight }}</p>
-    <p> Wzrost: {{ student.height }}</p>
-    <p> Czy podpisane zgody:
-                {% if student.consents  %}
-                    tak
-                {% else %}
-                    nie
-                {% endif %}
-    <p> Dostępnych godzin : {{ student.available_hours }}</p>
-    <p> Wykorzystanych godzin : {{ student.used_hours }}</p>
-    {% if student.description %}
-        <p>Opis:</p>
-        <p>{{ student.description }}</p>
+    <h4> Szkolenie </h4>
+    <h5> {{ training }} </h5>
+    <br>
+    <p>Kursanci:</p>
+    <ul>
+        {% for item in students_training %}
+            <li>{{ item.student }}, {{ item.duration }} godz.
+                <a href="/training/student/{{ item.pk }}"> Korekta danych</a>
+            </li>
+            {% if item.description %}
+                <p>Dodatkowe informacje o kursancie:</p>
+                <p>{{ item.description }}</p>
+            {% endif %}
+        {%  endfor %}
+    </ul>
+    {% if training.description %}
+        <p>Dodatkowe informacje:</p>
+        <p>{{ training.description }}</p>
     {% endif %}
     <br><br>
-    <a href="/student/update/{{ student.id }}"> Modyfikuj dane</a>
-    <a href="/student/del/{{ student.id }}"> Usuń</a>
-    <a href="/student/account/{{ student.id }}"> Dodaj konto</a>
+{# mozliwośc edycji i usuwania tylko w do czasu gdy nie minął termin oraz gdy nie ma powiazanego rekordu Training #}
+    <a href="/training/update/{{ training.pk }}"> Modyfikuj dane</a>
+    <a href="/training/del/{{ training.pk }}"> Usuń</a>
 
 {% endblock %}

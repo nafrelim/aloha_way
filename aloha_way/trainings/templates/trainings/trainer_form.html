@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
     {% if trainer.user %}
-    <h4>Trener: {{ trainer.user.first_name }} {{ trainer.user.last_name }}</h4>
+    <h4>Instruktor: {{ trainer.user.first_name }} {{ trainer.user.last_name }}</h4>
     {% else %}
-    <h4>Dodaj nowego trenera {{ trainer.user.first_name }} {{ trainer.user.last_name }}</h4>
+    <h4>Dodaj nowego instruktora {{ trainer.user.first_name }} {{ trainer.user.last_name }}</h4>
     {% endif %}
     <br>
     <table>

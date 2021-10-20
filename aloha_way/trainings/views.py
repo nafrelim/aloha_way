@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.contrib.auth.models import User
+
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -8,7 +8,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
-from trainings.forms import TrainingCreateForTrainerForm, TrainingCreateForm, BookingCreateForm, AddPacketForStudentForm
+from trainings.forms import TrainingCreateForm, BookingCreateForm, AddPacketForStudentForm, TrainingAcceptanceForm,\
+    StudentsTrainingUpdateForm
 from trainings.models import Trainer, TrainingPacket, Student, TrainerTimetable, SEASONS, Booking, Training, \
     StudentTraining
 
@@ -18,7 +19,7 @@ class IndexView(View):
     def get(self, request):
         today = datetime.now().strftime('%Y-%m-%d')
         bookings_today = Booking.objects.filter(day=today).filter(cancellation=False).order_by('start_time')
-        response = render(request, 'index.html', {'bookings': bookings_today })
+        response = render(request, 'index.html', {'bookings': bookings_today})
         return response
 
 
@@ -61,6 +62,12 @@ class TrainersListView(ListView):
 class DetailTrainerView(DetailView):
     model = Trainer
     template_name = 'trainer_detail.html'
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     trainer = Trainer.objects.get(pk=3)
+    #     context['level'] = LEVELS[trainer.level][1]
+    #     return context
 
 
 class TrainerCreateView(CreateView):
@@ -134,7 +141,7 @@ class AddPacketForStudentView(View):
             'student': student
         })
 
-    def post(self, request,student_id):
+    def post(self, request, student_id):
         student = Student.objects.get(pk=student_id)
         form = AddPacketForStudentForm(request.POST)
         if form.is_valid():
@@ -186,7 +193,8 @@ class TimetableUpdateView(UpdateView):
 
 
 class BookingsListView(ListView):
-    queryset = Booking.objects.all().filter(cancellation=False).order_by('day').order_by('start_time')
+    queryset = Booking.objects.all().filter(cancellation=False).filter(was_training=False).order_by('day').\
+        order_by('start_time')
     template_name = 'bookings_list.html'
 
 
@@ -205,39 +213,57 @@ class DetailBookingView(DetailView):
 #     fields = '__all__'
 #     success_url = reverse_lazy("bookings_list_view")
 
-
-class BookingCreateView(View):
-    def get(self, request):
-        form = BookingCreateForm
-        return render(request, 'booking_form.html', {
-            'form': form,
-        })
-
-    def post(self, request):
-        form = BookingCreateForm(request.POST)
-        if form.is_valid():
-            booking = form.save()
-            booking.save()
-        return redirect('/bookings/')
+class BookingCreateView(CreateView):
+    model = Booking
+    template_name = 'student_booking_form.html'
+    fields = ['day', 'start_time', 'duration', 'trainer', 'students', 'description']
+    success_url = reverse_lazy("bookings_list_view")
 
 
-class BookingCreateForStudentView(View):
-    def get(self, request, student_id):
-        student = Student.objects.get(pk=student_id)
-        form = BookingCreateForm
-        return render(request, 'booking_form.html', {
-            'form': form,
-            'student': student,
-        })
+# class BookingCreateView(View):
+#     def get(self, request):
+#         form = BookingCreateForm
+#         return render(request, 'booking_form.html', {
+#             'form': form,
+#         })
+#
+#     def post(self, request):
+#         form = BookingCreateForm(request.POST)
+#         if form.is_valid():
+#             booking = form.save()
+#             booking.save()
+#         return redirect('/bookings/')
 
-    def post(self, request, student_id):
-        form = BookingCreateForm(request.POST)
-        student = Student.objects.get(pk=student_id)
-        if form.is_valid():
-            booking = form.save(commit=False)
-            booking.save()
-            booking.students.add(student)
-        return redirect('/students/')
+
+# class BookingCreateForStudentView(View):
+#     form = BookingCreateForm
+#     template_name = 'student_booking_form.html'
+#     success_url = reverse_lazy("bookings_list_view")
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['student'] = Student.objects.get(pk=self.kwargs['student_id'])
+#         return context
+#
+
+
+# class BookingCreateForStudentView(View):
+#     def get(self, request, student_id):
+#         student = Student.objects.get(pk=student_id)
+#         form = BookingCreateForm
+#         return render(request, 'student_booking_form.html', {
+#             'form': form,
+#             'student': student,
+#         })
+#
+#     def post(self, request, student_id):
+#         form = BookingCreateForm(request.POST)
+#         student = Student.objects.get(pk=student_id)
+#         if form.is_valid():
+#             booking = form.save(commit=False)
+#             booking.save()
+#             booking.students.add(student)
+#         return redirect('/students/')
 
 
 class BookingDeleteView(DeleteView):
@@ -268,55 +294,65 @@ class DetailTrainingView(DetailView):
     model = Training
     template_name = 'training_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['students_training'] = StudentTraining.objects.filter(training_id=self.kwargs['pk'])
+        return context
 
-class TrainingCreateView(CreateView):
-    model = Training
-    fields = '__all__'
-    success_url = reverse_lazy("trainings_list_view")
 
-
-class TrainingCreateForBookingView(View):
-    def get (self, request, booking_id):
+class TrainingCreateView(View):
+    def get(self, request, booking_id):
         booking = Booking.objects.get(pk=booking_id)
+        students = booking.students.all().order_by('last_name')
         form = TrainingCreateForm(initial={
             'start_time': booking.start_time,
             'trainer': booking.trainer,
             'duration': booking.duration,
-            'students': booking.students.filter()
+            'students': students
         })
         return render(request, 'training_form.html', {
             'form': form,
             'booking': booking,
+            'students': booking.students.all()
         })
 
     def post(self, request, booking_id):
         form = TrainingCreateForm(request.POST)
         if form.is_valid():
             training = form.save(commit=False)
-            training.booking_id_id = booking_id
+            training.booking_id = booking_id
+            booking = Booking.objects.get(pk=booking_id)
+            booking.was_training = True
+            booking.save()
             training.save()
             form.save_m2m()
             student_trainings = StudentTraining.objects.filter(training_id=training.id)
             for item in student_trainings:
-                 item.duration = training.duration
-                 item.save()
+                item.duration = training.duration
+                item.save()
+            return redirect(f'/trainings/')
         return redirect('/bookings/')
 
 
-# class TrainingCreateForTrainerView(View):
-#     def get (self, request, pk):
-#         trainer = Trainer.objects.get(pk=pk)
-#         form = TrainingCreateForTrainerForm()
-#         return render(request, 'training_form.html', {
-#             'form': form,
-#             'trainer': trainer,
-#         })
-#
-#     def post(self, request):
-#         form = TrainingCreateForTrainerForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return render(request, "trainings_list_view")
+class TrainingStudentUpdateView(View):
+    def get(self, request, pk):
+        student_training = StudentTraining.objects.get(pk=pk)
+        training = Training.objects.get(pk=student_training.training_id)
+        form = StudentsTrainingUpdateForm
+        return render(request, 'student_training_form.html', {
+            'form': form,
+            'student': student_training,
+            'training': training
+        })
+
+    def post(self, request, pk):
+        form = StudentsTrainingUpdateForm(request.POST)
+        if form.is_valid():
+            duration = form.cleaned_data
+            student_training = StudentTraining.objects.get(pk=pk)
+            student_training.duration = duration['duration']
+            student_training.save()
+            return redirect(f'/training/{student_training.training_id}')
 
 
 class TrainingDeleteView(DeleteView):
@@ -328,3 +364,35 @@ class TrainingUpdateView(UpdateView):
     model = Training
     fields = '__all__'
     success_url = reverse_lazy("training_list_view")
+
+
+class TrainingAcceptanceView(View):
+    def get(self, request, training_id):
+        training = Training.objects.get(pk=training_id)
+        students_training = StudentTraining.objects.filter(training_id=training_id)
+        form = TrainingAcceptanceForm
+        return render(request, 'training_acceptance.html', {
+            'form': form,
+            'training': training,
+            'students_training': students_training
+        })
+
+    def post(self, request, training_id):
+        form = TrainingAcceptanceForm(request.POST)
+        if form.is_valid():
+            acceptance = form.cleaned_data
+            if acceptance:
+                training = Training.objects.get(pk=training_id)
+                training.acceptance = True
+                training.save()
+                trainer = Trainer.objects.get(pk=training.trainer_id)
+                trainer.hours_completed += training.duration
+                trainer.save()
+                student_trainings = StudentTraining.objects.filter(training_id=training.id)
+                for item in student_trainings:
+                    item.duration = training.duration
+                    item.student.available_hours -= training.duration
+                    item.student.used_hours += training.duration
+                    item.save()
+                    item.student.save()
+        return redirect('/trainings/')

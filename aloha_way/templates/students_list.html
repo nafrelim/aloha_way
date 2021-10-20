@@ -5,7 +5,6 @@
         {% for item in object_list %}
             <li>
                 <a href="/student/{{item.pk}}"> {{ item }}</a>
-                <a href="/booking/add/{{ item.pk }}"> Rezerwacja szkolenia</a>
             </li>
         {% endfor %}
     </ul>

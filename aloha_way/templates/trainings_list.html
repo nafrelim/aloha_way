@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
-    <h4>Zrealizowane szkolenia </h4>
+    <h4>Zrealizowane szkolenia (do zaakceptowania)</h4>
     <ul>
         {% for item in object_list %}
             <li><a href="/training/{{item.pk}}"> {{ item }}
@@ -8,5 +8,7 @@
             </li>
         {% endfor %}
     </ul>
-    <br><br>
+    <br>
+    <a href="/trainings_accepted/">Szkolenia zaakceptowane</a>
+
 {% endblock %}

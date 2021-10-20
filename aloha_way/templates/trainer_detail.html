@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
-    <h3> Instruktor: {{ trainer.user.first_name }} {{ trainer.user.last_name }} </h3>
+    <h4> Instruktor: {{ trainer.user.first_name }} {{ trainer.user.last_name }} </h4>
     <p> Email: {{ trainer.user.email }}</p>
     <p> Numer telefonu: {{ trainer.phone }}</p>
     <p> Poziom kompetencji: {{ trainer.get_level_display }}</p>
@@ -8,10 +8,7 @@
         <p>Opis:</p>
         <p>{{ trainer.description }}</p>
     {% endif %}
-    <br><br>
-    <a href="/trainer/update/{{ trainer.user.id }}"> Modyfikuj dane</a>
+    <br>
+    <a href="/trainer/update/{{ trainer.user.id }}"> Modyfikuj</a>
     <a href="/trainer/del/{{ trainer.user.id }}"> Usuń</a>
-    <a href="/timetables/{{ trainer.user.id }}"> Grafik obecności</a>
-    <a href="/booking/add/{{ trainer.user.id }}"> Zaplanuj szkolenie</a>
-    <a href="/training/add/{{ trainer.user.id }}"> Zapisz szkolenie</a>
 {% endblock %}

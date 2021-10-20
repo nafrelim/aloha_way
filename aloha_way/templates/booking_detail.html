@@ -7,9 +7,8 @@
             (REZERWACJA ANULOWANA)
         {% endif %}
     </h5>
-
     <br>
-    <p>Kursanci:</p>
+    <h6>Kursanci:</h6>
     <ul>
         {% for student in booking.students.all %}
             <li>{{ student }}</li>
@@ -19,9 +18,9 @@
         <p>Dodatkowe informacje:</p>
         <p>{{ booking.description }}</p>
     {% endif %}
-    <br><br>
+    <br>
 {# mozliwośc edycji i usuwania tylko w do czasu gdy nie minął termin oraz gdy nie ma powiazanego rekordu Training #}
-    <a href="/booking/update/{{ booking.id }}"> Modyfikuj dane</a>
+    <a href="/booking/update/{{ booking.id }}"> Modyfikuj</a>
     <a href="/booking/del/{{ booking.id }}"> Usuń</a>
-    <a href="/training/add/{{ booking.id }}"> Wykonanie szkolenia</a>
+    <a href="/training/add/{{ booking.id }}"> Wykonanie</a>
 {% endblock %}

@@ -17,12 +17,11 @@
         <p>Opis:</p>
         <p>{{ student.description }}</p>
     {% endif %}
-    <br><br>
-    <a href="/student/update/{{ student.id }}"> Modyfikuj dane</a>
-    <a href="/student/del/{{ student.id }}"> Usuń</a>
     <br>
-    <a href="/packet/add/{{ student.id }}"> Dodaj pakiet</a>
+    <a href="/student/update/{{ student.id }}"> Modyfikuj</a>
+    <a href="/student/del/{{ student.id }}"> Usuń</a>
     <br><br>
-    <a href="/student/account/{{ student.id }}"> Dodaj konto użytkownika</a>
+    <a href="/packet/add/{{ student.id }}"> Dodaj pakiet</a>
 
+{#    <a href="/student/account/{{ student.id }}"> Dodaj konto użytkownika</a>#}
 {% endblock %}

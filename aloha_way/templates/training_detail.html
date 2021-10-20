@@ -19,9 +19,12 @@
         <p>Dodatkowe informacje:</p>
         <p>{{ training.description }}</p>
     {% endif %}
-    <br><br>
+    <br>
 {# mozliwośc edycji i usuwania tylko w do czasu gdy nie minął termin oraz gdy nie ma powiazanego rekordu Training #}
-    <a href="/training/update/{{ training.pk }}"> Modyfikuj dane</a>
+    <a href="/training/update/{{ training.pk }}"> Modyfikuj</a>
     <a href="/training/del/{{ training.pk }}"> Usuń</a>
+    <br><br>
+    <a href="/training/acceptance/{{ training.pk }}"> Zaakceptuj szkolenie</a>
+
 
 {% endblock %}

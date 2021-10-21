@@ -160,7 +160,7 @@ class BookingsListView(LoginRequiredMixin, ListView):
     template_name = 'bookings_list.html'
 
 
-class CanceledBookingsListView(LoginRequiredMixin, ListView):
+class CancelledBookingsListView(LoginRequiredMixin, ListView):
     queryset = Booking.objects.filter(cancellation=True).order_by('day').order_by('start_time')
     template_name = 'canceled_bookings_list.html'
 

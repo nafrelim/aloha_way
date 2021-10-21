@@ -4,7 +4,7 @@
     <ul>
         {% for item in object_list %}
             <li><a href="/training/{{item.pk}}"> {{ item }}
-                <a href="/training/acceptance/{{ item.pk }}"> Zaakceptuj szkolenie</a>
+                <a href="/training/accept/{{ item.pk }}"> Zaakceptuj szkolenie</a>
             </li>
         {% endfor %}
     </ul>

@@ -38,6 +38,19 @@ def trainers(users):
 
 
 @pytest.fixture
+def student(user):
+    return Student.objects.create(first_name='Zenon', last_name='Zieliński', email='12@wp.pl', phone=123456)
+
+
+@pytest.fixture
+def students(db):
+    lst = []
+    for x in range(10):
+        lst.append(Student.objects.create(first_name=x, last_name=x, email='12@wp.pl', phone=123456, available_hours=10))
+    return lst
+
+
+@pytest.fixture
 def packets():
     lst = []
     for x in range(10):
@@ -51,26 +64,46 @@ def packet():
 
 
 @pytest.fixture
-def students():
-    lst = []
-    for x in range(10):
-        lst.append(Student.objects.create(first_name=x, last_name=x, email='12@wp.pl', phone=123456))
-    return lst
+def booking(trainer, students):
+    student1 = students[0]
+    student2 = students[1]
+    booking = Booking.objects.create(day='2021-10-20', start_time='14:00', trainer=trainer)
+    booking.students.add(student1)
+    booking.students.add(student2)
+    return booking
 
 
 @pytest.fixture
-def bookings(users, trainers, students):
+def bookings(trainers, students):
     lst = []
     for x in range(10):
         if x == 9:
             break
         student1 = students[x]
         student2 = students[x+1]
-        booking = Booking.objects.create(day='2021-10-20', start_time='14:00', duration=x, trainer=trainers[x])
+        booking = Booking.objects.create(day='2021-10-20', start_time='14:00', duration=x,
+                                         trainer=trainers[x])
         booking.students.add(student1)
         booking.students.add(student2)
         lst.append(booking)
     return lst
+
+
+@pytest.fixture
+def cancelled_bookings(trainers, students):
+    lst = []
+    for x in range(10):
+        if x == 9:
+            break
+        student1 = students[x]
+        student2 = students[x+1]
+        booking = Booking.objects.create(day='2021-10-20', start_time='14:00', duration=x,
+                                         trainer=trainers[x], cancellation=True)
+        booking.students.add(student1)
+        booking.students.add(student2)
+        lst.append(booking)
+    return lst
+
 
 
 @pytest.fixture

@@ -26,7 +26,7 @@ class Trainer(models.Model):
     description = models.TextField(null=True, blank=True, verbose_name='Dodatkowe informacje')
 
     def __str__(self):
-        return f'{self.user.first_name} {self.user.last_name}'
+        return f'{self.user.last_name} {self.user.first_name}'
 
 
 # class TrainerTimetable(models.Model):
@@ -81,7 +81,7 @@ class Student(models.Model):
         ordering = ['last_name']
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.last_name} {self.first_name}'
 
 
 # class Consent(models.Model):
@@ -111,8 +111,7 @@ class Booking(models.Model):
     def __str__(self):
         d = self.day.strftime('%Y-%m-%d')
         h = self.start_time.strftime('%H:%M')
-        return f'{self.trainer.user.first_name} {self.trainer.user.last_name}, ' \
-               f'start: {d} {h}, {self.duration} godz.'
+        return f'{self.trainer.user.last_name} {self.trainer.user.first_name}, start: {d} {h}, {self.duration} godz.'
 
 
 class Training(models.Model):
@@ -133,8 +132,7 @@ class Training(models.Model):
     def __str__(self):
         d = self.day.strftime('%Y-%m-%d')
         h = self.start_time.strftime('%H:%M')
-        return f'{self.trainer.user.first_name} {self.trainer.user.last_name}, ' \
-               f'{d}, {h}, {self.duration} godz.'
+        return f'{self.trainer.user.last_name} {self.trainer.user.first_name}, start: {d}, {h}, {self.duration} godz.'
 
 
 class StudentTraining(models.Model):
@@ -148,3 +146,5 @@ class StudentTraining(models.Model):
     training = models.ForeignKey(Training, on_delete=models.CASCADE, verbose_name='Trening')
     duration = models.PositiveSmallIntegerField(default=0, verbose_name='Czas trwania')
     description = models.TextField(null=True, blank=True, verbose_name='Dodatkowe informacje')
+
+

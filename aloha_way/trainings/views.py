@@ -1,6 +1,6 @@
 from datetime import datetime
 
-
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -21,79 +21,80 @@ class IndexView(View):
         return render(request, 'index.html', {'bookings': bookings_today})
 
 
-class TrainersListView(ListView):
+class TrainersListView(LoginRequiredMixin, ListView):
     model = Trainer
     template_name = 'trainers_list.html'
 
 
-class DetailTrainerView(DetailView):
+class TrainerDetailView(LoginRequiredMixin, DetailView):
     model = Trainer
     template_name = 'trainer_detail.html'
 
 
-class TrainerCreateView(CreateView):
+class TrainerCreateView(LoginRequiredMixin, CreateView):
     model = Trainer
     fields = ['user', 'phone', 'level', 'description']
-    success_url = reverse_lazy("trainers_list_view")
+    success_url = reverse_lazy('trainers_list_view')
 
 
-class TrainerDeleteView(DeleteView):
+class TrainerDeleteView(LoginRequiredMixin, DeleteView):
     model = Trainer
-    success_url = reverse_lazy("trainers_list_view")
+    success_url = reverse_lazy('trainers_list_view')
 
 
-class TrainerUpdateView(UpdateView):
+class TrainerUpdateView(LoginRequiredMixin, UpdateView):
     model = Trainer
     fields = ['phone', 'level', 'description']
-    success_url = reverse_lazy("trainers_list_view")
+    success_url = reverse_lazy('trainers_list_view')
 
 
-class StudentsListView(ListView):
+class StudentsListView(PermissionRequiredMixin, ListView):
+    permission_required = ['trainings.view_student']
     model = Student
     template_name = 'students_list.html'
 
 
-class DetailStudentView(DetailView):
+class StudentDetailView(LoginRequiredMixin, DetailView):
     model = Student
     template_name = 'student_detail.html'
 
 
-class StudentCreateView(CreateView):
+class StudentCreateView(LoginRequiredMixin, CreateView):
     model = Student
     fields = ['first_name', 'last_name', 'email', 'phone', 'weight', 'height', 'consents', 'available_hours',
               'description']
-    success_url = reverse_lazy("students_list_view")
+    success_url = reverse_lazy('students_list_view')
 
 
-class StudentDeleteView(DeleteView):
+class StudentDeleteView(LoginRequiredMixin, DeleteView):
     model = Student
-    success_url = reverse_lazy("students_list_view")
+    success_url = reverse_lazy('students_list_view')
 
 
-class StudentUpdateView(UpdateView):
+class StudentUpdateView(LoginRequiredMixin, UpdateView):
     model = Student
     fields = ['first_name', 'last_name', 'email', 'phone', 'weight', 'height', 'consents', 'available_hours',
               'used_hours', 'description']
-    success_url = reverse_lazy("students_list_view")
+    success_url = reverse_lazy('students_list_view')
 
 
-class PacketsListView(ListView):
+class PacketsListView(LoginRequiredMixin, ListView):
     model = TrainingPacket
     template_name = 'packets_list.html'
 
 
-class DetailPacketView(DetailView):
+class PacketDetailView(LoginRequiredMixin, DetailView):
     model = TrainingPacket
     template_name = 'packet_detail.html'
 
 
-class PacketCreateView(CreateView):
+class PacketCreateView(LoginRequiredMixin, CreateView):
     model = TrainingPacket
     fields = '__all__'
-    success_url = reverse_lazy("packets_list_view")
+    success_url = reverse_lazy('packets_list_view')
 
 
-class AddPacketForStudentView(View):
+class AddPacketForStudentView(LoginRequiredMixin, View):
     def get(self, request, student_id):
         form = AddPacketForStudentForm
         student = Student.objects.get(pk=student_id)
@@ -112,15 +113,15 @@ class AddPacketForStudentView(View):
         return redirect(f'/student/{student_id}')
 
 
-class PacketDeleteView(DeleteView):
+class PacketDeleteView(LoginRequiredMixin, DeleteView):
     model = TrainingPacket
-    success_url = reverse_lazy("packets_list_view")
+    success_url = reverse_lazy('packets_list_view')
 
 
-class PacketUpdateView(UpdateView):
+class PacketUpdateView(LoginRequiredMixin, UpdateView):
     model = TrainingPacket
     fields = '__all__'
-    success_url = reverse_lazy("packets_list_view")
+    success_url = reverse_lazy('packets_list_view')
 
 
 # class TimetablesListView(View):
@@ -139,73 +140,73 @@ class PacketUpdateView(UpdateView):
 # class TimetableCreateView(CreateView):
 #     model = TrainerTimetable
 #     fields = '__all__'
-#     success_url = reverse_lazy("timetables_list_view")
+#     success_url = reverse_lazy('timetables_list_view')
 #
 #
 # class TimetableDeleteView(DeleteView):
 #     model = TrainerTimetable
-#     success_url = reverse_lazy("timetables_list_view")
+#     success_url = reverse_lazy('timetables_list_view')
 #
 #
 # class TimetableUpdateView(UpdateView):
 #     model = TrainerTimetable
 #     fields = '__all__'
-#     success_url = reverse_lazy("timetables_list_view")
+#     success_url = reverse_lazy('timetables_list_view')
 
 
-class BookingsListView(ListView):
+class BookingsListView(LoginRequiredMixin, ListView):
     queryset = Booking.objects.filter(cancellation=False).filter(was_training=False).order_by('day').\
         order_by('start_time')
     template_name = 'bookings_list.html'
 
 
-class CanceledBookingsListView(ListView):
+class CanceledBookingsListView(LoginRequiredMixin, ListView):
     queryset = Booking.objects.filter(cancellation=True).order_by('day').order_by('start_time')
     template_name = 'canceled_bookings_list.html'
 
 
-class DetailBookingView(DetailView):
+class BookingDetailView(LoginRequiredMixin, DetailView):
     model = Booking
     template_name = 'booking_detail.html'
 
 
-class BookingCreateView(CreateView):
+class BookingCreateView(LoginRequiredMixin, CreateView):
     model = Booking
     # template_name = 'booking_form.html'
     fields = ['day', 'start_time', 'duration', 'trainer', 'students', 'description']
-    success_url = reverse_lazy("bookings_list_view")
+    success_url = reverse_lazy('bookings_list_view')
 
 
-class BookingDeleteView(DeleteView):
+class BookingDeleteView(LoginRequiredMixin, DeleteView):
     model = Booking
-    success_url = reverse_lazy("bookings_list_view")
+    success_url = reverse_lazy('bookings_list_view')
 
 
-class BookingCancelView(View):
+class BookingCancelView(LoginRequiredMixin, View):
     def get(self, request, booking_id):
         booking = Booking.objects.get(pk=booking_id)
         booking.cancellation = True
         booking.save()
-        return redirect('/bookings/')
+        return redirect('bookings_list_view')
 
 
-class BookingUpdateView(UpdateView):
+class BookingUpdateView(LoginRequiredMixin, UpdateView):
     model = Booking
     fields = '__all__'
-    success_url = reverse_lazy("bookings_list_view")
+    success_url = reverse_lazy('bookings_list_view')
 
 
-class TrainingsListView(ListView):
+class TrainingsListView(LoginRequiredMixin, ListView):
     queryset = Training.objects.filter(acceptance=False).order_by('day').order_by('start_time')
     template_name = 'trainings_list.html'
 
 
-class AcceptedTrainingsListView(ListView):
+class AcceptedTrainingsListView(LoginRequiredMixin, ListView):
     queryset = Training.objects.filter(acceptance=True).order_by('day').order_by('start_time')
     template_name = 'accepted_trainings_list.html'
 
 
-class DetailTrainingView(DetailView):
+class TrainingDetailView(LoginRequiredMixin, DetailView):
     model = Training
     template_name = 'training_detail.html'
 
@@ -215,7 +216,7 @@ class DetailTrainingView(DetailView):
         return context
 
 
-class TrainingCreateView(View):
+class TrainingCreateView(LoginRequiredMixin, View):
     def get(self, request, booking_id):
         booking = Booking.objects.get(pk=booking_id)
         students = booking.students.all().order_by('last_name')
@@ -245,11 +246,11 @@ class TrainingCreateView(View):
             for item in student_trainings:
                 item.duration = training.duration
                 item.save()
-            return redirect(f'/trainings/')
-        return redirect('/bookings/')
+            return redirect('trainings_list_view')
+        return redirect('bookings_list_view')
 
 
-class TrainingStudentUpdateView(View):
+class TrainingStudentUpdateView(LoginRequiredMixin, View):
     def get(self, request, pk):
         student_training = StudentTraining.objects.get(pk=pk)
         training = Training.objects.get(pk=student_training.training_id)
@@ -270,18 +271,18 @@ class TrainingStudentUpdateView(View):
             return redirect(f'/training/{student_training.training_id}')
 
 
-class TrainingDeleteView(DeleteView):
+class TrainingDeleteView(LoginRequiredMixin, DeleteView):
     model = Training
-    success_url = reverse_lazy("training_list_view")
+    success_url = reverse_lazy('trainings_list_view')
 
 
-class TrainingUpdateView(UpdateView):
+class TrainingUpdateView(LoginRequiredMixin, UpdateView):
     model = Training
     fields = '__all__'
-    success_url = reverse_lazy("training_list_view")
+    success_url = reverse_lazy('trainings_list_view')
 
 
-class TrainingAcceptanceView(View):
+class TrainingAcceptanceView(LoginRequiredMixin, View):
     def get(self, request, training_id):
         training = Training.objects.get(pk=training_id)
         students_training = StudentTraining.objects.filter(training_id=training_id)

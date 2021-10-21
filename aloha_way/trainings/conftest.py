@@ -13,6 +13,23 @@ def users():
 
 
 @pytest.fixture
+def user():
+    user = User.objects.create(username='nafrelim')
+    return user
+
+
+@pytest.fixture
+def superuser():
+    user = User.objects.create_superuser(username='admin')
+    return user
+
+
+@pytest.fixture
+def trainer(user):
+    return Trainer.objects.create(user=user, phone=123456)
+
+
+@pytest.fixture
 def trainers(users):
     lst = []
     for x in range(10):
@@ -26,6 +43,11 @@ def packets():
     for x in range(10):
         lst.append(TrainingPacket.objects.create(name=x, number_of_hours=x, price=x))
     return lst
+
+
+@pytest.fixture
+def packet():
+    return TrainingPacket.objects.create(name='test', number_of_hours=10, price=2000)
 
 
 @pytest.fixture
@@ -61,8 +83,8 @@ def trainings(trainers, students, bookings):
         student2 = students[x+1]
         training = Training.objects.create(booking=bookings[x], day='2021-10-20', start_time='14:00',
                                            duration=x, trainer=trainers[x], acceptance=True)
-        student_training1 = StudentTraining.objects.create(student=student1, training=trainings[x])
-        student_training2 = StudentTraining.objects.create(student=student2, training=trainings[x+1])
+        student_training1 = StudentTraining.objects.create(student=student1, training=training)
+        student_training2 = StudentTraining.objects.create(student=student2, training=training)
         lst.append(training)
     return lst
 
@@ -77,8 +99,8 @@ def student_trainings(trainers, students, bookings):
         student2 = students[x + 1]
         training = Training.objects.create(booking=bookings[x], day='2021-10-20', start_time='14:00',
                                            duration=x, trainer=trainers[x], acceptance=True)
-        student_training1 = StudentTraining.objects.create(student=student1, training=trainings[x])
-        student_training2 = StudentTraining.objects.create(student=student2, training=trainings[x+1])
+        student_training1 = StudentTraining.objects.create(student=student1, training=training)
+        student_training2 = StudentTraining.objects.create(student=student2, training=training)
         lst.append(student_training1)
         lst.append(student_training2)
     return lst

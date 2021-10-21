@@ -2,8 +2,6 @@ import pytest
 from django.test import Client
 from django.urls import reverse
 
-from trainings.models import Student
-
 
 def test_empty():
     client = Client()
@@ -116,10 +114,10 @@ def test_student_add_get_login(user):
     client = Client()
     client.force_login(user)
     student = {
-        'first_name':'Zenon',
-        'last_name':'Zieliński',
-        'email':'12@wp.pl',
-        'phone':123456
+        'first_name': 'Zenon',
+        'last_name': 'Zieliński',
+        'email': '12@wp.pl',
+        'phone': 123456
     }
     response = client.post(reverse('student_add_view'), data=student)
     assert response.status_code == 200
@@ -205,14 +203,14 @@ def test_bookings_list_get_not_empty(bookings, user):
 
 
 @pytest.mark.django_db
-def test_cancelled_bookings_list_get_not_empty(cancelled_bookings, user):
+def test_bookings_cancelled_list_get_not_empty(bookings_cancelled, user):
     client = Client()
     client.force_login(user)
     response = client.get(reverse('cancelled_bookings_list_view'))
     assert response.status_code == 200
     bookings_list = response.context['object_list']
-    assert bookings_list.count() == len(cancelled_bookings)
-    for booking in cancelled_bookings:
+    assert bookings_list.count() == len(bookings_cancelled)
+    for booking in bookings_cancelled:
         assert booking in bookings_list
 
 
@@ -236,10 +234,10 @@ def test_booking_add_get_login(user):
     client = Client()
     client.force_login(user)
     student = {
-        'first_name':'Zenon',
-        'last_name':'Zieliński',
-        'email':'12@wp.pl',
-        'phone':123456
+        'first_name': 'Zenon',
+        'last_name': 'Zieliński',
+        'email': '12@wp.pl',
+        'phone': 123456
     }
     response = client.post(reverse('student_add_view'), data=student)
     assert response.status_code == 200
@@ -268,12 +266,71 @@ def test_trainings_list_get_not_empty(trainings, user):
 
 
 @pytest.mark.django_db
-def test_student_trainings_list_get_not_empty(student_trainings, user):
+def test_trainings_accepted_list_get_not_empty(trainings_accepted, user):
     client = Client()
     client.force_login(user)
-    response = client.get(reverse('training_student_add_view'))
+    response = client.get(reverse('accepted_trainings_list_view'))
     assert response.status_code == 200
-    studenttrainings_list = response.context['object_list']
-    assert studenttrainings_list.count() == len(student_trainings)
-    for student_training in student_trainings:
-        assert student_training in studenttrainings_list
+    trainings_list = response.context['object_list']
+    assert trainings_list.count() == len(trainings_accepted)
+    for training in trainings_accepted:
+        assert training in trainings_list
+
+
+@pytest.mark.django_db
+def test_training_detail_get_login(user, trainings):
+    client = Client()
+    client.force_login(user)
+    response = client.get(reverse('training_detail_view', args=[trainings[0].pk]))
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_training_add_get_not_login(booking):
+    client = Client()
+    response = client.post(reverse('training_add_view', args=[booking.id]))
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db
+def test_training_add_get_login(user, booking):
+    client = Client()
+    client.force_login(user)
+    response = client.post(reverse('training_add_view', args=[booking.id]))
+    assert response.status_code == 302
+
+
+def test_training_student_update_get_login(user, student, trainings):
+    client = Client()
+    client.force_login(user)
+    data = {
+        # 'student': student,
+        # 'training': trainings[0],
+        'duration': 3
+    }
+    response = client.post(reverse('training_student_update_view', args=[student.id]), data=data)
+    assert response.status_code == 302
+    # item = response.context['object']
+    # assert item.duration != data['duration']
+
+
+@pytest.mark.django_db
+def test_training_update_get_login(user, trainings):
+    client = Client()
+    client.force_login(user)
+    response = client.post(reverse('training_update_view', args=[trainings[0].pk]), data={'duration': 3})
+    assert response.status_code == 200
+    item = response.context['object']
+    assert item.duration != trainings[0].duration
+
+
+@pytest.mark.django_db
+def test_training_accept_get_login(user, trainings):
+    client = Client()
+    client.force_login(user)
+    trainings[0].acceptance = False
+    response = client.post(reverse('training_accept_view', args=[trainings[0].pk]), data=dict(acceptance=True))
+    assert response.status_code == 302
+    # nie umiem tego sprawdzić
+    # item = response.context['object']
+    # assert item.acceptance != trainings[0].acceptance

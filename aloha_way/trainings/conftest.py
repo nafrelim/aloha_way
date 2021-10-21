@@ -13,7 +13,7 @@ def users():
 
 
 @pytest.fixture
-def user():
+def user(db):
     user = User.objects.create(username='nafrelim')
     return user
 
@@ -43,10 +43,11 @@ def student(user):
 
 
 @pytest.fixture
-def students(db):
+def students():
     lst = []
     for x in range(10):
-        lst.append(Student.objects.create(first_name=x, last_name=x, email='12@wp.pl', phone=123456, available_hours=10))
+        lst.append(Student.objects.create(first_name=x, last_name=x, email='12@wp.pl', phone=123456,
+                                          available_hours=10))
     return lst
 
 
@@ -90,7 +91,7 @@ def bookings(trainers, students):
 
 
 @pytest.fixture
-def cancelled_bookings(trainers, students):
+def bookings_cancelled(trainers, students):
     lst = []
     for x in range(10):
         if x == 9:
@@ -105,9 +106,8 @@ def cancelled_bookings(trainers, students):
     return lst
 
 
-
 @pytest.fixture
-def trainings(trainers, students, bookings):
+def trainings(trainer, students, bookings):
     lst = []
     for x in range(10):
         if x == 9:
@@ -115,7 +115,23 @@ def trainings(trainers, students, bookings):
         student1 = students[x]
         student2 = students[x+1]
         training = Training.objects.create(booking=bookings[x], day='2021-10-20', start_time='14:00',
-                                           duration=x, trainer=trainers[x], acceptance=True)
+                                           trainer=trainer)
+        student_training1 = StudentTraining.objects.create(student=student1, training=training)
+        student_training2 = StudentTraining.objects.create(student=student2, training=training)
+        lst.append(training)
+    return lst
+
+
+@pytest.fixture
+def trainings_accepted(trainer, students, bookings):
+    lst = []
+    for x in range(10):
+        if x == 9:
+            break
+        student1 = students[x]
+        student2 = students[x+1]
+        training = Training.objects.create(booking=bookings[x], day='2021-10-20', start_time='14:00',
+                                           trainer=trainer, acceptance=True)
         student_training1 = StudentTraining.objects.create(student=student1, training=training)
         student_training2 = StudentTraining.objects.create(student=student2, training=training)
         lst.append(training)
@@ -136,4 +152,20 @@ def student_trainings(trainers, students, bookings):
         student_training2 = StudentTraining.objects.create(student=student2, training=training)
         lst.append(student_training1)
         lst.append(student_training2)
+    return lst
+
+
+@pytest.fixture
+def training_accept(trainers, students):
+    lst = []
+    for x in range(10):
+        if x == 9:
+            break
+        student1 = students[x]
+        student2 = students[x+1]
+        booking = Booking.objects.create(day='2021-10-20', start_time='14:00', duration=x,
+                                         trainer=trainers[x], cancellation=True)
+        booking.students.add(student1)
+        booking.students.add(student2)
+        lst.append(booking)
     return lst

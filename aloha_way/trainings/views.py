@@ -17,7 +17,8 @@ class IndexView(View):
 
     def get(self, request):
         today = datetime.now().strftime('%Y-%m-%d')
-        bookings_today = Booking.objects.filter(day=today).filter(cancellation=False).order_by('start_time')
+        bookings_today = Booking.objects.filter(day=today).filter(cancellation=False).filter(was_training=False).\
+            order_by('start_time')
         return render(request, 'index.html', {'bookings': bookings_today})
 
 
@@ -251,13 +252,13 @@ class TrainingCreateView(LoginRequiredMixin, View):
 
 
 class TrainingStudentUpdateView(LoginRequiredMixin, View):
-    def get(self, request, pk):
-        student_training = StudentTraining.objects.get(pk=pk)
-        training = Training.objects.get(pk=student_training.training_id)
+    def get(self, request, training_student_id):
+        training_student = StudentTraining.objects.get(pk=training_student_id)
+        training = Training.objects.get(pk=training_student.training_id)
         form = StudentsTrainingUpdateForm
         return render(request, 'student_training_form.html', {
             'form': form,
-            'student': student_training,
+            'student': training_student,
             'training': training
         })
 
@@ -282,7 +283,7 @@ class TrainingUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('trainings_list_view')
 
 
-class TrainingAcceptanceView(LoginRequiredMixin, View):
+class TrainingAcceptView(LoginRequiredMixin, View):
     def get(self, request, training_id):
         training = Training.objects.get(pk=training_id)
         students_training = StudentTraining.objects.filter(training_id=training_id)

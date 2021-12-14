@@ -13,7 +13,7 @@ def users():
 
 
 @pytest.fixture
-def user(db):
+def user():
     user = User.objects.create(username='nafrelim')
     return user
 

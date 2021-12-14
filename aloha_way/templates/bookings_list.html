@@ -1,18 +1,22 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
-    <h4>Rezerwacje szkoleń </h4>
-    <ul>
-        {% for item in object_list %}
+    <div class="container-fluid">
+        <h4>Rezerwacje szkoleń </h4>
+        <ul class="list-group-numbered">
+            {% for item in object_list %}
             <li>
                 <a href="/booking/{{item.pk}}"> {{ item }}</a>
                 <a href="/booking/cancel/{{ item.pk }}"> Anulowanie</a>
                 <a href="/training/add/{{ item.pk }}"> Realizacja</a>
             </li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </ul>
+    </div>
     <br>
-    <a href="/bookings_cancelled/">Anulowane rezerwacje</a>
-    <br><br>
-    <a href="/booking/add/">Zarezerwuj szkolenie</a>
+    <div class="container-fluid">
+        <a href="/bookings_cancelled/">Anulowane rezerwacje</a>
+        <br><br>
+        <a href="/booking/add/">Zarezerwuj szkolenie</a>
+    </div>
 
 {% endblock %}

@@ -252,8 +252,8 @@ class TrainingCreateView(LoginRequiredMixin, View):
 
 
 class TrainingStudentUpdateView(LoginRequiredMixin, View):
-    def get(self, request, training_student_id):
-        training_student = StudentTraining.objects.get(pk=training_student_id)
+    def get(self, request, pk):
+        training_student = StudentTraining.objects.get(pk=pk)
         training = Training.objects.get(pk=training_student.training_id)
         form = StudentsTrainingUpdateForm
         return render(request, 'student_training_form.html', {

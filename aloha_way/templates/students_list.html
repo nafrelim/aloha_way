@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
+    <div class="container-fluid">
     <h4>Kursanci </h4>
-    <ul>
+    <ul class="list-group-numbered">
         {% for item in object_list %}
             <li>
                 <a href="/student/{{item.pk}}"> {{ item }}</a>
@@ -10,4 +11,5 @@
     </ul>
     <br>
     <a href="/student/add/">Dodaj nowego kursanta</a>
+    </div>
 {% endblock %}

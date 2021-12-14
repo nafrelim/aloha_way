@@ -22,11 +22,5 @@ class TrainingCreateForm(ModelForm):
         labels = {'students': 'Kursanci'}
 
 
-class StudentsTrainingUpdateForm(ModelForm):
-    class Meta:
-        model = StudentTraining
-        fields = ['duration']
-
-
 class TrainingAcceptanceForm(forms.Form):
     booking = forms.BooleanField(label='Akceptacja?', initial=True)

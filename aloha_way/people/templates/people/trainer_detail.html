@@ -1,0 +1,14 @@
+{% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    <h4> Instruktor: {{ trainer.user.first_name }} {{ trainer.user.last_name }} </h4>
+    <p> Email: {{ trainer.user.email }}</p>
+    <p> Numer telefonu: {{ trainer.phone }}</p>
+    <p> Poziom kompetencji: {{ trainer.get_level_display }}</p>
+    {% if trainer.description %}
+        <p>Opis:</p>
+        <p>{{ trainer.description }}</p>
+    {% endif %}
+    <br>
+    <a href="/trainer/update/{{ trainer.user.id }}"> Modyfikuj</a>
+    <a href="/trainer/del/{{ trainer.user.id }}"> Usuń</a>
+{% endblock %}

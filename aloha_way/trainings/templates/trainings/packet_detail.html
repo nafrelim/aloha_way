@@ -1,0 +1,20 @@
+{% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    <h3> Pakiet {{ trainingpacket.name }}, sezon: {{ trainingpacket.season}} </h3>
+    <p> Liczba godzin: {{ trainingpacket.number_of_hours }}</p>
+    <p> Cena: {{ trainingpacket.number_of_hours }}</p>
+    <p> Czy aktywny:
+                {% if trainingpacket.number_of_hours  %}
+                    tak
+                {% else %}
+                    nie
+                {% endif %}
+    </p>
+    {% if trainingpacket.description %}
+        <p>Opis:</p>
+        <p>{{ trainingpacket.description }}</p>
+    {% endif %}
+    <br>
+    <a href="/packet/update/{{ trainingpacket.id }}"> Modyfikuj</a>
+    <a href="/packet/del/{{ trainingpacket.id }}"> Usuń</a>
+{% endblock %}

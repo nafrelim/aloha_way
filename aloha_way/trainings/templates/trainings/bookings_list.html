@@ -1,0 +1,22 @@
+{% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    <div class="container-fluid">
+        <h4> Rezerwacje szkoleń </h4>
+        <ul class="list-group-numbered">
+            {% for item in object_list %}
+            <li>
+                <a href="{% url 'booking_detail_view' item.pk %}"> {{ item }}</a>
+                <a href="{% url 'booking_cancel_view' item.pk %}"> Anulowanie</a>
+                <a href="{% url 'training_add_view' item.pk %}"> Realizacja</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <br>
+    <div class="container-fluid">
+        <a href="{% url 'cancelled_bookings_list_view' %}">Anulowane rezerwacje</a>
+        <br><br>
+        <a href="{%  url 'booking_add_view' %}">Zarezerwuj szkolenie</a>
+    </div>
+
+{% endblock %}

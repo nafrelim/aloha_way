@@ -21,6 +21,7 @@ from trainings.views import IndexView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index_view'),
-    path('trainings/', include('trainings.urls')),
+    path('', include('trainings.urls')),
+    path('', include('people.urls')),
     path('accounts/', include('accounts.urls')),
 ]

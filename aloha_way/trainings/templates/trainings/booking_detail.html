@@ -1,0 +1,26 @@
+{% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    <h4> Rezerwacja </h4>
+    <h5>
+        {{ booking }}
+        {% if booking.cancellation %}
+            (REZERWACJA ANULOWANA)
+        {% endif %}
+    </h5>
+    <br>
+    <h6>Kursanci:</h6>
+    <ul>
+        {% for student in booking.students.all %}
+            <li>{{ student }}</li>
+        {%  endfor %}
+    </ul>
+    {% if booking.description %}
+        <p>Dodatkowe informacje:</p>
+        <p>{{ booking.description }}</p>
+    {% endif %}
+    <br>
+{# mozliwośc edycji i usuwania tylko w do czasu gdy nie minął termin oraz gdy nie ma powiazanego rekordu Training #}
+    <a href="/booking/update/{{ booking.id }}"> Modyfikuj</a>
+    <a href="/booking/del/{{ booking.id }}"> Usuń</a>
+    <a href="/training/add/{{ booking.id }}"> Wykonanie</a>
+{% endblock %}

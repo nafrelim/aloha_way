@@ -1,0 +1,13 @@
+{% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    <h4>Lista skasowanych rezerwacji  </h4>
+    <ul>
+        {% for item in object_list %}
+            <li>
+                <a href="{% url 'booking_detail_view' item.pk %}"> {{ item }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <br><br>
+     <a href="{% url 'bookings_list_view' %}">Aktualne rezerwacje</a>
+{% endblock %}

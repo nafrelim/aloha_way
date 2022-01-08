@@ -1,0 +1,30 @@
+    {% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    <h4> Szkolenie </h4>
+    <h5> {{ training }} </h5>
+    <br>
+    <p>Kursanci:</p>
+    <ul>
+        {% for item in students_training %}
+            <li>{{ item.student }}, {{ item.duration }} godz.
+                <a href="/training/student/{{ item.pk }}"> Korekta danych</a>
+            </li>
+            {% if item.description %}
+                <p>Dodatkowe informacje o kursie:</p>
+                <p>{{ item.description }}</p>
+            {% endif %}
+        {%  endfor %}
+    </ul>
+    {% if training.description %}
+        <p>Dodatkowe informacje:</p>
+        <p>{{ training.description }}</p>
+    {% endif %}
+    <br>
+{# mozliwośc edycji i usuwania tylko w do czasu gdy nie minął termin oraz gdy nie ma powiazanego rekordu Training #}
+    <a href="/training/update/{{ training.pk }}"> Modyfikuj</a>
+    <a href="/training/del/{{ training.pk }}"> Usuń</a>
+    <br><br>
+    <a href="/training/accept/{{ training.pk }}"> Zaakceptuj szkolenie</a>
+
+
+{% endblock %}

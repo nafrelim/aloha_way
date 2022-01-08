@@ -1,0 +1,51 @@
+{% load static %}
+<!doctype html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="{% static 'bootstrap5.1.1/bootstrap-5.1.1-dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <script src="{% static 'bootstrap5.1.1/bootstrap-5.1.1-dist/js/bootstrap.bundle.min.js' %}"></script>
+    <title>Document</title>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a href="{% url 'index_view' %}"><img src="{% static 'kite.jpg' %}" width="50px" alt="Ikona"></a>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'login' %}">Logowanie </a>
+        {% else %}
+            <a href="{% url 'trainers_list_view' %}"> Instruktorzy </a>
+            <a href="{% url 'students_list_view' %}"> Kursanci </a>
+            <a href="{% url 'bookings_list_view' %}"> Rezerwacje </a>
+{#            <a href="{% url 'add_booking_view' %}">  Zarezerwuj </a>#}
+            <a href="{% url 'trainings_list_view' %}"> Szkolenia </a>
+{#            <a href="{% url 'add_training_view' %}"> Zapisanie szkolenia </a>#}
+{#            <a href="{% url 'bookkings_list_view' %}"> Szkolenia zaplanowane</a>#}
+            <a href="{% url 'packets_list_view' %}"> Pakiety </a>
+            <a href="{% url 'logout' %}">Wylogowanie </a>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="container-fluid">
+    {% block zawartosc %}
+        Bazowy szablon
+    {% endblock %}
+</div>
+<br><br>
+{% if user.is_authenticated %}
+    <footer class="card-footer ">
+        użytkownik: <b>{{ user.username }}</b>
+        <br>
+        zalogowany: <b>{{ user.last_login|date:"Y-m-d H:i" }}</b>
+        <br>
+        aktualny czas: <b>{{ data }}</b>
+    </footer>
+{% endif %}
+
+</body>
+</html>

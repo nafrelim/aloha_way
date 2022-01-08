@@ -1,0 +1,15 @@
+{% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    <div class="container-fluid">
+    <h4>Kursanci </h4>
+    <ul class="list-group-numbered">
+        {% for item in object_list %}
+            <li>
+                <a href="{% url 'student_detail_view' item.pk %}"> {{ item }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <br>
+    <a href="{% url 'student_add_view' %}">Dodaj nowego kursanta</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    {% if trainer.user %}
+    <h4>Instruktor: {{ trainer.user.first_name }} {{ trainer.user.last_name }}</h4>
+    {% else %}
+    <h4>Nowy instruktor {{ trainer.user.first_name }} {{ trainer.user.last_name }}</h4>
+    {% endif %}
+    <br>
+    <table>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_table }}
+            <tr>
+                <td colspan="2"><input type="submit" value="Zapisz"></td>
+            </tr>
+        </form>
+    </table>
+    {% for message in messages %}
+        <p> {{message}}</p>
+    {% endfor %}
+{% endblock %}

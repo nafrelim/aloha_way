@@ -19,74 +19,17 @@ class IndexView(View):
         today = datetime.now().strftime('%Y-%m-%d')
         bookings_today = Booking.objects.filter(day=today).filter(cancellation=False).filter(was_training=False).\
             order_by('start_time')
-        return render(request, 'index.html', {'bookings': bookings_today})
-
-
-class TrainersListView(LoginRequiredMixin, ListView):
-    model = Trainer
-    template_name = 'trainers_list.html'
-
-
-class TrainerDetailView(LoginRequiredMixin, DetailView):
-    model = Trainer
-    template_name = 'trainer_detail.html'
-
-
-class TrainerCreateView(LoginRequiredMixin, CreateView):
-    model = Trainer
-    fields = ['user', 'phone', 'level', 'description']
-    success_url = reverse_lazy('trainers_list_view')
-
-
-class TrainerDeleteView(LoginRequiredMixin, DeleteView):
-    model = Trainer
-    success_url = reverse_lazy('trainers_list_view')
-
-
-class TrainerUpdateView(LoginRequiredMixin, UpdateView):
-    model = Trainer
-    fields = ['phone', 'level', 'description']
-    success_url = reverse_lazy('trainers_list_view')
-
-
-class StudentsListView(PermissionRequiredMixin, ListView):
-    permission_required = ['trainings.view_student']
-    model = Student
-    template_name = 'students_list.html'
-
-
-class StudentDetailView(LoginRequiredMixin, DetailView):
-    model = Student
-    template_name = 'student_detail.html'
-
-
-class StudentCreateView(LoginRequiredMixin, CreateView):
-    model = Student
-    fields = ['first_name', 'last_name', 'email', 'phone', 'weight', 'height', 'consents', 'available_hours',
-              'description']
-    success_url = reverse_lazy('students_list_view')
-
-
-class StudentDeleteView(LoginRequiredMixin, DeleteView):
-    model = Student
-    success_url = reverse_lazy('students_list_view')
-
-
-class StudentUpdateView(LoginRequiredMixin, UpdateView):
-    model = Student
-    fields = ['first_name', 'last_name', 'email', 'phone', 'weight', 'height', 'consents', 'available_hours',
-              'used_hours', 'description']
-    success_url = reverse_lazy('students_list_view')
+        return render(request, 'trainings/index.html', {'bookings': bookings_today})
 
 
 class PacketsListView(LoginRequiredMixin, ListView):
     model = TrainingPacket
-    template_name = 'packets_list.html'
+    template_name = 'trainings/packets_list.html'
 
 
 class PacketDetailView(LoginRequiredMixin, DetailView):
     model = TrainingPacket
-    template_name = 'packet_detail.html'
+    template_name = 'trainings/packet_detail.html'
 
 
 class PacketCreateView(LoginRequiredMixin, CreateView):
@@ -158,17 +101,17 @@ class PacketUpdateView(LoginRequiredMixin, UpdateView):
 class BookingsListView(LoginRequiredMixin, ListView):
     queryset = Booking.objects.filter(cancellation=False).filter(was_training=False).order_by('day').\
         order_by('start_time')
-    template_name = 'bookings_list.html'
+    template_name = 'trainings/bookings_list.html'
 
 
 class CancelledBookingsListView(LoginRequiredMixin, ListView):
     queryset = Booking.objects.filter(cancellation=True).order_by('day').order_by('start_time')
-    template_name = 'canceled_bookings_list.html'
+    template_name = 'trainings/canceled_bookings_list.html'
 
 
 class BookingDetailView(LoginRequiredMixin, DetailView):
     model = Booking
-    template_name = 'booking_detail.html'
+    template_name = 'trainings/booking_detail.html'
 
 
 class BookingCreateView(LoginRequiredMixin, CreateView):
@@ -199,17 +142,17 @@ class BookingUpdateView(LoginRequiredMixin, UpdateView):
 
 class TrainingsListView(LoginRequiredMixin, ListView):
     queryset = Training.objects.filter(acceptance=False).order_by('day').order_by('start_time')
-    template_name = 'trainings_list.html'
+    template_name = 'trainings/trainings_list.html'
 
 
 class AcceptedTrainingsListView(LoginRequiredMixin, ListView):
     queryset = Training.objects.filter(acceptance=True).order_by('day').order_by('start_time')
-    template_name = 'accepted_trainings_list.html'
+    template_name = 'trainings/accepted_trainings_list.html'
 
 
 class TrainingDetailView(LoginRequiredMixin, DetailView):
     model = Training
-    template_name = 'training_detail.html'
+    template_name = 'trainings/training_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -227,7 +170,7 @@ class TrainingCreateView(LoginRequiredMixin, View):
             'duration': booking.duration,
             'students': students
         })
-        return render(request, 'training_form.html', {
+        return render(request, 'trainings/training_form.html', {
             'form': form,
             'booking': booking,
             'students': booking.students.all()
@@ -288,7 +231,7 @@ class TrainingAcceptView(LoginRequiredMixin, View):
         training = Training.objects.get(pk=training_id)
         students_training = StudentTraining.objects.filter(training_id=training_id)
         form = TrainingAcceptanceForm
-        return render(request, 'training_acceptance.html', {
+        return render(request, 'trainings/training_acceptance.html', {
             'form': form,
             'training': training,
             'students_training': students_training

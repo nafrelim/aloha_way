@@ -1,0 +1,21 @@
+{% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    {% if user.is_authenticated %}
+        {% if bookings %}
+            <h3>Szkolenia dzisiaj </h3>
+            <ul>
+                {% for booking in bookings %}
+                    <li>
+                        <a href="{% url 'booking_detail_view' booking.pk %}"> {{ booking }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <br>
+            <h2>Brak szkoleń zaplanowanych na dzisiaj!</h2>
+        {% endif %}
+    {% else %}
+        <br>
+        <h2>Proszę się zalogować!</h2>
+    {% endif %}
+{% endblock %}

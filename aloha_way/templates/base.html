@@ -16,7 +16,7 @@
     <div class="container-fluid">
         <a href="{% url 'index_view' %}"><img src="{% static 'kite.jpg' %}" width="50px"></a>
         {% if not user.is_authenticated %}
-            <a href="{% url 'login' %}">Zalogowanie </a>
+            <a href="{% url 'login' %}">Logowanie </a>
         {% else %}
             <a href="{% url 'trainers_list_view' %}"> Instruktorzy </a>
             <a href="{% url 'students_list_view' %}"> Kursanci </a>

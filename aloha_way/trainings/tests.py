@@ -192,7 +192,7 @@ def test_packet_add_for_student_get_login(user, student):
         'price': 2000
     }
     response = client.post(reverse('packet_add_for_student_view', args=[student.pk]), data=packet)
-    # trochę słabe - jak sprawdzić czu u studenta się zwiększyło?
+    # trochę słabe - jak sprawdzić czy u studenta się zwiększyło?
     assert response.status_code == 302
 
 

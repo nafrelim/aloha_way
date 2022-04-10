@@ -5,7 +5,7 @@ from trainings.models import Training, Booking, TrainingPacket, Student, Student
 
 
 class AddPacketForStudentForm(forms.Form):
-    packet = forms.ModelChoiceField(label='Wybierz pakiet', queryset=TrainingPacket.objects.filter(active=True))
+    packet = forms.ModelChoiceField(label='Wybierz pakiet', queryset=TrainingPacket.objects.filter(is_active=True))
 
 
 class StudentsTrainingUpdateForm(ModelForm):

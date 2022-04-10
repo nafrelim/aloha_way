@@ -39,6 +39,7 @@ class PacketCreateView(LoginRequiredMixin, CreateView):
 
 
 class AddPacketForStudentView(LoginRequiredMixin, View):
+
     def get(self, request, student_id):
         form = AddPacketForStudentForm
         student = Student.objects.get(pk=student_id)

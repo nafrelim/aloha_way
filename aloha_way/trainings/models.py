@@ -1,35 +1,33 @@
 from django.db import models
 from django.contrib.auth.models import User
+
 from people.models import Trainer, Student
-
-# Poniższe słowniki docelowo powinny być tabelami
-
-SEASONS = (
-                (0, 2021),  # domyślny sezon
-                (1, 2022),
-             )
 
 
 class TrainingPacket(models.Model):
-
-    # Pakiety treningowe, które może wykupić kursant
+    """
+    Training packages that can be purchased by the student
+    """
 
     name = models.CharField(max_length=50, verbose_name='Nazwa')
     number_of_hours = models.PositiveSmallIntegerField(verbose_name='Liczba godzin')
     price = models.PositiveSmallIntegerField(verbose_name='Cena')
-    active = models.BooleanField(default=False, verbose_name='Aktywny')
+    is_active = models.BooleanField(default=False, verbose_name='Aktywny')
     description = models.TextField(null=True, blank=True, verbose_name='Dodatkowe informacje')
 
     class Meta:
-        ordering = ['number_of_hours']
+        ordering = ['is_active', 'number_of_hours']
+        verbose_name_plural = 'Pakiety treningowe'
 
     def __str__(self):
         return f'{self.name}'
 
 
 class Booking(models.Model):
+    """
+    Training booking: one instructor, one or more students
+    """
 
-    # Rezerwacja szkolenia: jeden instruktor, jeden lub wielu kursantów
     day = models.DateField(verbose_name='Dzień szkolenia')
     start_time = models.TimeField(verbose_name='Godzina rozpoczęcia')
     duration = models.PositiveSmallIntegerField(default=1, verbose_name='Czas trwania(godz)')
@@ -43,11 +41,12 @@ class Booking(models.Model):
 
     class Meta:
         ordering = ['day', 'start_time']
+        verbose_name_plural = 'Rezerwacje'
 
     def __str__(self):
         d = self.day.strftime('%Y-%m-%d')
         h = self.start_time.strftime('%H:%M')
-        return f'{self.trainer.user.last_name} {self.trainer.user.first_name}, start: {d} {h}, {self.duration} godz.'
+        return f'start: {d} {h}, {self.duration} godz., {self.trainer.user.last_name} {self.trainer.user.first_name}'
 
 
 class Training(models.Model):
@@ -64,21 +63,30 @@ class Training(models.Model):
 
     class Meta:
         ordering = ['day', 'start_time']
+        verbose_name_plural = 'Szkolenia'
 
     def __str__(self):
         d = self.day.strftime('%Y-%m-%d')
         h = self.start_time.strftime('%H:%M')
-        return f'{self.trainer.user.last_name} {self.trainer.user.first_name}, start: {d}, {h}, {self.duration} godz.'
+        return f'start: {d}, {h}, {self.duration} godz., {self.trainer.user.last_name} {self.trainer.user.first_name}'
 
 
 class StudentTraining(models.Model):
 
-    # Model pośredni między Student i Training
-    # Przechowuje liczbę godzin poświęconych przez konkretnego kursanta na konkretny trening
-    # Czas poświęcony na wspólny trening może okazać się różny dla każdego kursanta (np. kontuzja w trakcie treningu)
-    # Terning może trwać inną długość czasu niż zaplanowano w rezerwacji (np. z powodu warunków pogodowych)
+    """
+    Intermediate model between Student and Training
+    Stores the number of hours spent by a specific student on a specific training
+    The time spent on training together may be different for each student (e.g. an injury during training)
+    The training may take a different length of time than planned in the booking (e.g. due to weather conditions)
+    """
 
     student = models.ForeignKey(Student, on_delete=models.CASCADE, verbose_name='Instruktor')
     training = models.ForeignKey(Training, on_delete=models.CASCADE, verbose_name='Trening')
     duration = models.PositiveSmallIntegerField(default=0, verbose_name='Czas trwania')
     description = models.TextField(null=True, blank=True, verbose_name='Dodatkowe informacje')
+
+    class Meta:
+        verbose_name_plural = 'Przeprowadzone szkolenia'
+
+    def __str__(self):
+        pass

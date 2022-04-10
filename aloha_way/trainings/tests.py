@@ -261,18 +261,18 @@ def test_booking_add_get_not_login():
     assert response.status_code == 302
 
 
-@pytest.mark.django_db
-def test_booking_add_get_login(user):
-    client = Client()
-    client.force_login(user)
-    student = {
-        'first_name': 'Zenon',
-        'last_name': 'Zieliński',
-        'email': '12@wp.pl',
-        'phone': 123456
-    }
-    response = client.post(reverse('student_add_view'), data=student)
-    assert response.status_code == 200
+# @pytest.mark.django_db
+# def test_booking_add_get_login(user):
+#     client = Client()
+#     client.force_login(user)
+#     student = {
+#         'first_name': 'Zenon',
+#         'last_name': 'Zieliński',
+#         'email': '12@wp.pl',
+#         'phone': 123456
+#     }
+#     response = client.post(reverse('student_add_view'), data=student)
+#     assert response.status_code == 200
 
 
 @pytest.mark.django_db

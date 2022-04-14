@@ -1,6 +1,13 @@
 from django.urls import path, include
 from . import views
 
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'bookings', views.BookingViewSet)
+router.register(r'trainings', views.TrainingViewSet)
+
+
 urlpatterns = [
     # path('accounts/', include('django.contrib.auth.urls')),
     # path('trainers/', views.TrainersListView.as_view(), name='trainers_list_view'),
@@ -29,4 +36,5 @@ urlpatterns = [
     path('training/del/<int:pk>/', views.TrainingDeleteView.as_view(), name='training_del_view'),
     path('training/update/<int:pk>/', views.TrainingUpdateView.as_view(), name='training_update_view'),
     path('training/accept/<int:training_id>/', views.TrainingAcceptView.as_view(), name='training_accept_view'),
+    path('api/', include(router.urls)),
 ]

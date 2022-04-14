@@ -10,19 +10,20 @@ class TrainingPacketAdmin(admin.ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    list_filter = ('trainer', 'duration', 'day') # nue filtruje po trainer
+    list_filter = ('trainer__user__last_name', 'duration', 'day')
     list_display = ('__str__', 'trainer')
-    # search_fields = ['trainer'] # wywala sie
+    search_fields = ['trainer__user__last_name']
 
 
 @admin.register(Training)
-class TraingAdmin(admin.ModelAdmin):
-    pass
-    # list_display = ('__str__')
+class TrainingAdmin(admin.ModelAdmin):
+    list_filter = ('booking', 'trainer__user__last_name', 'day', 'acceptance')
+    list_display = ('__str__', 'booking', 'trainer', 'acceptance')
+    search_fields = ['trainer__user__last_name']
 
 
 @admin.register(StudentTraining)
-class StudentTraingAdmin(admin.ModelAdmin):
+class StudentTrainingAdmin(admin.ModelAdmin):
     pass
     # list_display = ('__str__')
 

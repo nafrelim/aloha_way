@@ -1,20 +1,23 @@
-from datetime import datetime
-
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import render, redirect
-
-# Create your views here.
+from datetime import datetime
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+from rest_framework.viewsets import ModelViewSet
 
-from trainings.forms import TrainingCreateForm, AddPacketForStudentForm, TrainingAcceptanceForm,\
-    StudentsTrainingUpdateForm
-from trainings.models import Trainer, TrainingPacket, Student, Booking, Training, StudentTraining
+
+from .models import TrainingPacket, Booking, Training, StudentTraining
+from people.models import Trainer, Student
+from .serializer import BookingSerializer, TrainingSerializer
+
+from .forms import TrainingCreateForm, AddPacketForStudentForm, TrainingAcceptanceForm, StudentsTrainingUpdateForm
 
 
 class IndexView(View):
-
+    """
+    Main view
+    """
     def get(self, request):
         today = datetime.now().strftime('%Y-%m-%d')
         bookings_today = Booking.objects.filter(day=today).filter(cancellation=False).filter(was_training=False).\
@@ -23,6 +26,9 @@ class IndexView(View):
 
 
 class PacketsListView(LoginRequiredMixin, ListView):
+    """
+    List of available training packages
+    """
     model = TrainingPacket
     template_name = 'trainings/packets_list.html'
 
@@ -257,3 +263,13 @@ class TrainingAcceptView(LoginRequiredMixin, View):
                     item.save()
                     item.student.save()
         return redirect('/trainings/')
+
+
+class BookingViewSet(ModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+
+
+class TrainingViewSet(ModelViewSet):
+    queryset = Training.objects.all()
+    serializer_class = TrainingSerializer

@@ -1,3 +1,4 @@
+from django.contrib.admin.utils import lookup_field
 from django.db import models
 from django.contrib.auth.models import User
 

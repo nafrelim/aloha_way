@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=aloha_way
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - /pgdata:/var/lib/postgresql/data/
+    ports:
+      - "5050:5432"
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/aloha_way/
+    ports:
+      - "8080:8000"
+    depends_on:
+      - db

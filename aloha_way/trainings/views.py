@@ -5,11 +5,11 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from rest_framework.viewsets import ModelViewSet
-
+from django.contrib.auth.models import User
 
 from .models import TrainingPacket, Booking, Training, StudentTraining
 from people.models import Trainer, Student
-from .serializer import BookingSerializer, TrainingSerializer
+from .serializer import BookingSerializer, TrainingSerializer, UserSerializer
 
 from .forms import TrainingCreateForm, AddPacketForStudentForm, TrainingAcceptanceForm, StudentsTrainingUpdateForm
 
@@ -49,7 +49,7 @@ class AddPacketForStudentView(LoginRequiredMixin, View):
     def get(self, request, student_id):
         form = AddPacketForStudentForm
         student = Student.objects.get(pk=student_id)
-        return render(request, 'add_packet_for_student_form.html', {
+        return render(request, 'trainings/add_packet_for_student_form.html', {
             'form': form,
             'student': student
         })
@@ -273,3 +273,8 @@ class BookingViewSet(ModelViewSet):
 class TrainingViewSet(ModelViewSet):
     queryset = Training.objects.all()
     serializer_class = TrainingSerializer
+
+
+class UserViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

@@ -12,4 +12,9 @@ urlpatterns = [
     path('student/add/', views.StudentCreateView.as_view(), name='student_add_view'),
     path('student/del/<int:pk>/', views.StudentDeleteView.as_view(), name='student_del_view'),
     path('student/update/<int:pk>/', views.StudentUpdateView.as_view(), name='student_update_view'),
+    path('consents/', views.ConsentsListView.as_view(), name='consents_list_view'),
+    path('consent/<int:pk>/', views.ConsentDetailView.as_view(), name='consent_detail_view'),
+    path('consent/add/', views.ConsentCreateView.as_view(), name='consent_add_view'),
+    path('consent/del/<int:pk>/', views.ConsentDeleteView.as_view(), name='consent_del_view'),
+    path('consent/update/<int:pk>/', views.ConsentUpdateView.as_view(), name='consent_update_view'),
 ]

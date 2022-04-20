@@ -1,4 +1,3 @@
-from django.contrib.admin.utils import lookup_field
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -7,14 +6,17 @@ from aloha_way.project_settings import LEVELS, SEASONS
 
 class Trainer(models.Model):
     """
-    Model for trainers.
+    Data model for trainers.
     """
 
     user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
-    phone = models.PositiveIntegerField(verbose_name='Numer telefonu')
+    phone = models.CharField(max_length=15, verbose_name='Numer telefonu')
     level = models.SmallIntegerField(choices=LEVELS, default=0, verbose_name='Poziom kompetencji')
+    # Trainer's experience level
     hours_completed = models.PositiveSmallIntegerField(default=0, verbose_name='Zrealizowanych godzin')
+    # Number of hours of trainings by the instructor
     active = models.BooleanField(default=True, verbose_name='Czy pracuje w tym sezonie?')
+    # Is the trainer active in the current season?
     description = models.TextField(null=True, blank=True, verbose_name='Dodatkowe informacje')
 
     class Meta:
@@ -59,7 +61,13 @@ class Student(models.Model):
     weight = models.SmallIntegerField(null=True, blank=True, verbose_name='Waga')
     height = models.SmallIntegerField(null=True, blank=True, verbose_name='Wzrost')
     consents = models.BooleanField(default=False, verbose_name='Podpisanie zgód')
+    # Has the student signed the necessary consents related to participation in training?
     available_hours = models.SmallIntegerField(default=0, verbose_name='Dostępne godziny')
+    """
+    The available number of hours resulting from the difference between the number of hours in
+    the purchased training packages and the number of completed hours. 
+    If the number is negative, the student must purchase a package.
+    """
     used_hours = models.PositiveSmallIntegerField(default=0, verbose_name='Godziny wykorzystane')
     description = models.TextField(null=True, blank=True, verbose_name='Dodatkowe informacje')
 

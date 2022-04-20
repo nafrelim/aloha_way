@@ -1,0 +1,12 @@
+{# Displaying the student's data #}
+
+{% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    <h4> Nazwa zgody: {{ consent.name }} </h4>
+    <br>
+    <p>{{ consent.description }}</p>
+    <br>
+    <a href="{% url 'consent_update_view' consent.id %}"> Modyfikuj</a>
+    <a href="{%  url 'consent_del_view' consent.id %}"> Usuń</a>
+    <br>
+{% endblock %}

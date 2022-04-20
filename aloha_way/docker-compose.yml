@@ -2,21 +2,28 @@ version: "3.9"
 
 services:
   db:
+    container_name: postgres
     image: postgres
     environment:
       - POSTGRES_DB=aloha_way
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - TZ=Europe/Warsaw
     volumes:
-      - /pgdata:/var/lib/postgresql/data/
+      - c:/Users/mstaw/container_db/aloha_way:/var/lib/postgresql/data
     ports:
       - "5050:5432"
   web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    container_name: aloha_way
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: python manage.py runserver 0.0.0.0:8080
+    environment:
+      - TZ=Europe/Warsaw
     volumes:
-      - .:/aloha_way/
+      - ./:/aloha_way/
     ports:
-      - "8080:8000"
+      - "8000:8080"
     depends_on:
       - db

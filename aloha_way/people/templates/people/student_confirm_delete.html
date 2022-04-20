@@ -1,0 +1,11 @@
+{% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <h4> Potwierdź usunięcie kursanta <h4>
+        <h5> {{ student.first_name }} {{ student.last_name }} </h5>
+        <br>
+            {{ form.as_p }}
+      <input type="submit" value="Usuń">
+    </form>
+{% endblock %}

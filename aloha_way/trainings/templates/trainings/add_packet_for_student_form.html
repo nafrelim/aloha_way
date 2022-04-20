@@ -1,0 +1,17 @@
+{% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    <h4>Wybór pakietu szkolenia</h4>
+    <br>
+    <table>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_table }}
+            <tr>
+                <td colspan="2"><input type="submit" value="Zapisz"></td>
+            </tr>
+        </form>
+    </table>
+    {% for message in messages %}
+        <p> {{message}}</p>
+    {% endfor %}
+{% endblock %}

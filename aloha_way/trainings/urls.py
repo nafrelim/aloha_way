@@ -6,15 +6,10 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 router.register(r'bookings', views.BookingViewSet)
 router.register(r'trainings', views.TrainingViewSet)
+router.register(r'users', views.UserViewSet)
 
 
 urlpatterns = [
-    # path('accounts/', include('django.contrib.auth.urls')),
-    # path('trainers/', views.TrainersListView.as_view(), name='trainers_list_view'),
-    # path('trainer/<int:pk>/', views.TrainerDetailView.as_view(), name='trainer_detail_view'),
-    # path('trainer/add/', views.TrainerCreateView.as_view(), name='trainer_add_view'),
-    # path('trainer/del/<int:pk>/', views.TrainerDeleteView.as_view(), name='trainer_del_view'),
-    # path('trainer/update/<int:pk>/', views.TrainerUpdateView.as_view(), name='trainer_update_view'),
     path('packets/', views.PacketsListView.as_view(), name='packets_list_view'),
     path('packet/<int:pk>/', views.PacketDetailView.as_view(), name='packet_detail_view'),
     path('packet/add/', views.PacketCreateView.as_view(), name='packet_add_view'),

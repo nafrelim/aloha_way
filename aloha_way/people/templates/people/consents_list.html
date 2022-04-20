@@ -1,0 +1,15 @@
+{% extends 'trainings/base.html' %}
+{% block zawartosc %}
+    <div class="container-fluid">
+    <h4>Zgody </h4>
+    <ul class="list-group-numbered">
+        {% for item in object_list %}
+            <li>
+                <a href="{% url 'consent_detail_view' item.pk %}"> {{ item }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <br>
+    <a href="{% url 'consent_add_view' %}">Dodaj nową zgodę</a>
+    </div>
+{% endblock %}
